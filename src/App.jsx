@@ -1,7 +1,7 @@
 import UsersPage from './UsersPage'
 
 function App() {
-  return <UsersPage />
+  return
 }
 
 export default App
