@@ -2,16 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../hooks/useAuth";
-import { InputField, ErrorBox, SubmitButton, Divider, GoogleButton, styles } from "./authComponents";
+import { InputField, ErrorBox, SubmitButton, Divider, GoogleButton, AuthCard, AuthPage } from "./authComponents";
 
 export default function RegisterPage() {
-  const [hoTen, setHoTen]               = useState("");
-  const [email, setEmail]               = useState("");
-  const [password, setPassword]         = useState("");
-  const [confirmPass, setConfirmPass]   = useState("");
-  const [soDienThoai, setSoDienThoai]   = useState("");
-  const [diaChi, setDiaChi]             = useState("");
-  const [localError, setLocalError]     = useState("");
+  const [name, setName]               = useState("");
+  const [email, setEmail]             = useState("");
+  const [password, setPassword]       = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+  const [localError, setLocalError]   = useState("");
 
   const { handleRegister, handleLoginGoogle, loading, error, handleClearError, isLoggedIn } = useAuth();
   const navigate = useNavigate();
@@ -27,7 +25,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     setLocalError("");
-    if (!hoTen || !email || !password || !confirmPass || !soDienThoai || !diaChi) {
+    if (!name || !email || !password || !confirmPass) {
       setLocalError("Vui lòng điền đầy đủ thông tin!"); return;
     }
     if (password.length < 6) {
@@ -36,34 +34,33 @@ export default function RegisterPage() {
     if (password !== confirmPass) {
       setLocalError("Mật khẩu xác nhận không khớp!"); return;
     }
-    await handleRegister(hoTen, email, password, soDienThoai, diaChi);
+    await handleRegister(name, email, password);
   };
 
-  const displayError = localError || error;
-
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Đăng ký</h2>
-        <p style={styles.subtitle}>Tạo tài khoản mới</p>
+    <AuthPage>
+      <AuthCard>
+        <h2 className="text-2xl font-bold text-gray-800 mb-1">Đăng ký</h2>
+        <p className="text-sm text-gray-400 mb-5">Tạo tài khoản mới</p>
 
-        <InputField label="Họ và tên"      type="text"     value={hoTen}       onChange={(v) => { clearAllErrors(); setHoTen(v); }}       placeholder="Nguyễn Văn A" />
-        <InputField label="Email"          type="email"    value={email}       onChange={(v) => { clearAllErrors(); setEmail(v); }}       placeholder="example@email.com" />
-        <InputField label="Số điện thoại"  type="text"     value={soDienThoai} onChange={(v) => { clearAllErrors(); setSoDienThoai(v); }} placeholder="0901234567" />
-        <InputField label="Địa chỉ"        type="text"     value={diaChi}      onChange={(v) => { clearAllErrors(); setDiaChi(v); }}      placeholder="123 Đường ABC, Quận 1, TP.HCM" />
-        <InputField label="Mật khẩu"       type="password" value={password}    onChange={(v) => { clearAllErrors(); setPassword(v); }}    placeholder="Tối thiểu 6 ký tự" />
-        <InputField label="Xác nhận mật khẩu" type="password" value={confirmPass} onChange={(v) => { clearAllErrors(); setConfirmPass(v); }} placeholder="Nhập lại mật khẩu" />
+        <InputField label="Họ và tên"          type="text"     value={name}        onChange={(v) => { clearAllErrors(); setName(v); }}        placeholder="Nguyễn Văn A" />
+        <InputField label="Email"              type="email"    value={email}       onChange={(v) => { clearAllErrors(); setEmail(v); }}       placeholder="example@email.com" />
+        <InputField label="Mật khẩu"           type="password" value={password}    onChange={(v) => { clearAllErrors(); setPassword(v); }}    placeholder="Tối thiểu 6 ký tự" />
+        <InputField label="Xác nhận mật khẩu"  type="password" value={confirmPass} onChange={(v) => { clearAllErrors(); setConfirmPass(v); }} placeholder="Nhập lại mật khẩu" />
 
-        {displayError && <ErrorBox message={displayError} />}
+        {(localError || error) && <ErrorBox message={localError || error} />}
 
         <SubmitButton label="Đăng ký" loading={loading} onClick={handleSubmit} />
         <Divider />
         <GoogleButton loading={loading} onClick={handleGoogle} />
 
-        <p style={styles.switchText}>
-          Đã có tài khoản? <Link to="/login" style={styles.link}>Đăng nhập</Link>
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Đã có tài khoản?{" "}
+          <Link to="/login" className="text-amber-500 hover:text-amber-600 font-medium transition-colors">
+            Đăng nhập
+          </Link>
         </p>
-      </div>
-    </div>
+      </AuthCard>
+    </AuthPage>
   );
 }

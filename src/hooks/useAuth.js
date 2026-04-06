@@ -14,11 +14,11 @@ export function useAuth() {
     if (login.fulfilled.match(result)) navigate("/");
   };
 
-  // ---- ĐĂNG KÝ (thêm soDienThoai, diaChi) ----
-  const handleRegister = async (hoTen, email, password, soDienThoai, diaChi) => {
-    const result = await dispatch(register({ hoTen, email, password, soDienThoai, diaChi }));
-    if (register.fulfilled.match(result)) navigate("/login");
-  };
+  // ---- ĐĂNG KÝ ----
+  const handleRegister = async (name, email, password) => { // ← bỏ soDienThoai, diaChi
+  const result = await dispatch(register({ name, email, password }));
+  if (register.fulfilled.match(result)) navigate("/login");
+};
 
   // ---- ĐĂNG NHẬP GOOGLE ----
   const handleLoginGoogle = async (googleToken) => {

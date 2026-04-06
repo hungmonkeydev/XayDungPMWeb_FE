@@ -13,12 +13,11 @@ export const login = createAsyncThunk(
 // ---- ĐĂNG KÝ ----
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ hoTen, email, password, soDienThoai, diaChi }, { rejectWithValue }) => {
-    try { return await registerAPI(hoTen, email, password, soDienThoai, diaChi); }
+  async ({ name, email, password }, { rejectWithValue }) => { // ← bỏ soDienThoai, diaChi
+    try { return await registerAPI(name, email, password); }
     catch (err) { return rejectWithValue(err.message); }
   }
 );
-
 // ---- ĐĂNG NHẬP GOOGLE ----
 export const loginGoogle = createAsyncThunk(
   "auth/loginGoogle",

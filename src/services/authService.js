@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "https://xaydungwebnoithat-backend.onrender.com/api";
 
 // ---- ĐĂNG NHẬP ----
 export async function loginAPI(email, password) {
@@ -16,11 +16,11 @@ export async function loginAPI(email, password) {
 }
 
 // ---- ĐĂNG KÝ ----
-export async function registerAPI(hoTen, email, password, soDienThoai, diaChi) {
+export async function registerAPI(name, email, password) {
   const res = await fetch(`${BASE_URL}/customers/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hoTen, email, password, soDienThoai, diaChi }),
+    body: JSON.stringify({ name, email, password }), 
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Đăng ký thất bại!");

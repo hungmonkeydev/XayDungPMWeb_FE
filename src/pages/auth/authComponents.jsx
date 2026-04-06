@@ -1,52 +1,69 @@
+// ---- INPUT FIELD ----
 export function InputField({ label, type, value, onChange, placeholder }) {
   return (
-    <div style={{ marginBottom: 14 }}>
-      <label style={{ fontSize: 13, color: "#555", display: "block", marginBottom: 4 }}>{label}</label>
+    <div className="mb-4">
+      <label className="block text-sm text-gray-600 mb-1">{label}</label>
       <input
-        type={type} value={value} placeholder={placeholder}
+        type={type}
+        value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        style={{ width: "100%", padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 14, boxSizing: "border-box" }}
+        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-amber-500 transition-colors"
       />
     </div>
   );
 }
 
+// ---- ERROR BOX ----
 export function ErrorBox({ message }) {
   return (
-    <div style={{ background: "#fff0f0", color: "#c0392b", border: "1px solid #f5c6c6", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 12 }}>
+    <div className="bg-red-50 text-red-600 border border-red-200 rounded-lg px-3 py-2 text-sm mb-3">
       {message}
     </div>
   );
 }
 
+// ---- SUCCESS BOX ----
+export function SuccessBox({ message }) {
+  return (
+    <div className="bg-green-50 text-green-700 border border-green-200 rounded-lg px-3 py-2 text-sm mb-3">
+      {message}
+    </div>
+  );
+}
+
+// ---- SUBMIT BUTTON ----
 export function SubmitButton({ label, loading, onClick }) {
   return (
-    <button onClick={onClick} disabled={loading} style={{
-      width: "100%", padding: 11, background: "#378ADD", color: "#fff",
-      border: "none", borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: "pointer",
-    }}>
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-bold rounded-lg text-sm uppercase tracking-wide transition-colors cursor-pointer"
+    >
       {loading ? "Đang xử lý..." : label}
     </button>
   );
 }
 
+// ---- DIVIDER ----
 export function Divider() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "14px 0" }}>
-      <div style={{ flex: 1, height: 1, background: "#ddd" }} />
-      <span style={{ fontSize: 12, color: "#aaa" }}>hoặc</span>
-      <div style={{ flex: 1, height: 1, background: "#ddd" }} />
+    <div className="flex items-center gap-3 my-4">
+      <div className="flex-1 h-px bg-gray-200" />
+      <span className="text-xs text-gray-400">hoặc</span>
+      <div className="flex-1 h-px bg-gray-200" />
     </div>
   );
 }
 
+// ---- GOOGLE BUTTON ----
 export function GoogleButton({ loading, onClick }) {
   return (
-    <button onClick={onClick} disabled={loading} style={{
-      width: "100%", padding: 11, background: "#fff", color: "#333",
-      border: "1px solid #ddd", borderRadius: 8, fontSize: 14, fontWeight: 500,
-      cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-    }}>
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className="w-full py-3 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-lg text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
+    >
       <svg width="18" height="18" viewBox="0 0 48 48">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -58,11 +75,20 @@ export function GoogleButton({ loading, onClick }) {
   );
 }
 
-export const styles = {
-  page:       { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f7fa", padding: 16 },
-  card:       { width: "100%", maxWidth: 420, background: "#fff", border: "1px solid #ddd", borderRadius: 12, padding: 28 },
-  title:      { fontSize: 22, fontWeight: 600, margin: "0 0 4px", color: "#1a1a1a" },
-  subtitle:   { fontSize: 14, color: "#888", margin: "0 0 20px" },
-  link:       { color: "#378ADD", textDecoration: "none" },
-  switchText: { textAlign: "center", fontSize: 13, marginTop: 16, color: "#555" },
-};
+// ---- CARD WRAPPER ----
+export function AuthCard({ children }) {
+  return (
+    <div className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-7">
+      {children}
+    </div>
+  );
+}
+
+// ---- PAGE WRAPPER ----
+export function AuthPage({ children }) {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
+      {children}
+    </div>
+  );
+}
