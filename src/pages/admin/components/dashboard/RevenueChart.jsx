@@ -20,7 +20,6 @@ export default function RevenueChart() {
         </div>
         <div className="text-right">
           <p className="text-lg font-bold text-stone-900">{total}</p>
-          <p className="text-[10px] text-emerald-500 font-medium">+12.4% tuần này</p>
         </div>
       </div>
 
