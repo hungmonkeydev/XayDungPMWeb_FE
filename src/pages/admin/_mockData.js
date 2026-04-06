@@ -64,25 +64,25 @@ export const topProducts = [
 export const adminNavItems = [
   {
     section: "Tổng quan",
-    items: [{ id: "dashboard", label: "Dashboard", icon: "grid" }]
+    items: [{ id: "dashboard", label: "Dashboard", icon: "grid", path: "/admin/dashboard" }]
   },
   {
     section: "Catalogue",
-    items: [{ id: "products", label: "Sản phẩm", icon: "box" }]
+    items: [{ id: "products", label: "Sản phẩm", icon: "box", path: "/admin/products" }]
   },
   {
     section: "Giao dịch",
     items: [
-      { id: "orders", label: "Đơn hàng", icon: "cart" },
-      { id: "customers", label: "Khách hàng", icon: "users" }
+      { id: "orders", label: "Đơn hàng", icon: "cart", path: "/admin/orders" },
+      { id: "customers", label: "Khách hàng", icon: "users", path: "/admin/customers" }
     ]
   },
   {
     section: "Marketing",
-    items: [{ id: "promotions", label: "Khuyến mãi", icon: "tag" }]
+    items: [{ id: "promotions", label: "Khuyến mãi", icon: "tag", path: "/admin/promotions" }]
   },
   {
     section: "Hệ thống",
-    items: [{ id: "staff", label: "Nhân viên", icon: "shield" }]
+    items: [{ id: "staff", label: "Nhân viên", icon: "shield", path: "/admin/staff" }]
   }
 ];

@@ -2,8 +2,11 @@
 
 import AdminIcon from "./AdminIcons";
 import { adminNavItems } from "../_mockData";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function AdminSidebar({ activePage, onNavigate, collapsed }) {
+export default function AdminSidebar({ collapsed }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   return (
     <aside
       className={[
@@ -34,11 +37,11 @@ export default function AdminSidebar({ activePage, onNavigate, collapsed }) {
             {!collapsed && <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest px-2 mb-1">{section.section}</p>}
             <div className="space-y-0.5">
               {section.items.map(item => {
-                const isActive = activePage === item.id;
+                const isActive = location.pathname === item.path;
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onNavigate(item.id)}
+                    onClick={() => navigate(item.path)}
                     className={[
                       "w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-sm",
                       "transition-all duration-150 group relative",
