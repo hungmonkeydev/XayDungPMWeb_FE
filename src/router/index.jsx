@@ -1,8 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AdminLayout from "../pages/admin/AdminLayout";
 import HomePage from "../pages/customer/HomePage";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import DashboardPage from "../pages/admin/DashboardPage";
+import ProductsPage from "../pages/admin/ProductsPage";
+import ProductFormPage from "../pages/admin/ProductFormPage";
 
 // Tạo một Layout chung cho phía khách hàng (Customer)
 const CustomerLayout = ({ children }) => (
@@ -20,12 +23,24 @@ const router = createBrowserRouter([
       <CustomerLayout>
         <HomePage />
       </CustomerLayout>
-    ),
+    )
   },
   {
     path: "/admin",
-    element: <AdminLayout />, // Trang Admin thường có Header/Sidebar riêng nên không dùng CustomerLayout
-  },
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <Navigate to="dashboard" /> },
+      { path: "dashboard", element: <DashboardPage /> },
+      { path: "products", element: <ProductsPage /> },
+      { path: "products/create", element: <ProductFormPage /> },
+      { path: "products/edit/:id", element: <ProductFormPage /> },
+      // { path: "orders", element: <OrdersPage /> },
+      // { path: "customers", element: <CustomersPage /> },
+      // { path: "promotions", element: <PromotionsPage /> },
+      // { path: "staff", element: <StaffPage /> },
+      { path: "*", element: <div>404 Admin</div> }
+    ]
+  }
 ]);
 
 export default router;

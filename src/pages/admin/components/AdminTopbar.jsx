@@ -11,8 +11,8 @@ const PAGE_META = {
   staff: { title: "Nhân viên", sub: "Phân quyền & quản lý nhân sự" }
 };
 
-export default function AdminTopbar({ activePage, onToggleSidebar }) {
-  const meta = PAGE_META[activePage] ?? PAGE_META.dashboard;
+export default function AdminTopbar({ activePage, pageTitleOverride, onToggleSidebar }) {
+  const meta = pageTitleOverride ?? PAGE_META[activePage] ?? PAGE_META.dashboard;
 
   return (
     <header className="h-14 bg-white border-b border-stone-100 flex items-center px-5 gap-4 flex-shrink-0">
