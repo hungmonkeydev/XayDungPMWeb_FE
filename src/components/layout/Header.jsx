@@ -30,6 +30,7 @@ const Header = () => {
   }, []);
 
   return (
+  <>
     <header className="w-full relative font-sans">
       <div className="bg-black text-white text-xs py-2 flex justify-center items-center h-8">
 
@@ -91,10 +92,10 @@ const Header = () => {
           </div>
         </div>
       </div>
-
-      <nav className="sticky top-0 z-50 bg-black text-white shadow-lg">
+    </header>
+    <nav className="sticky top-0 z-50 bg-black text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex justify-center space-x-8 text-sm font-semibold text-[15px] uppercase tracking-wider">
+          <ul className="flex justify-center space-x-8 text-sm font-semibold text-[12px] uppercase tracking-wider">
             <li>
               <a href="/" className="block py-4 text-amber-500 transition-colors whitespace-nowrap">
                 TRANG CHỦ
@@ -183,7 +184,7 @@ const Header = () => {
           </ul>
         </div>
       </nav>
-    </header>
+    </>
   );
 };
 
