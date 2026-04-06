@@ -5,28 +5,24 @@ export const dashboardStats = [
     id: 1,
     label: "Doanh thu tháng này",
     value: "₫128.4M",
-    delta: +12.4,
     icon: "revenue"
   },
   {
     id: 2,
     label: "Đơn hàng mới",
     value: "347",
-    delta: +8.1,
     icon: "orders"
   },
   {
     id: 3,
     label: "Khách hàng mới",
     value: "89",
-    delta: +5.3,
     icon: "customers"
   },
   {
     id: 4,
     label: "Tỷ lệ hủy đơn",
     value: "2.8%",
-    delta: +0.4,
     icon: "cancel",
     invertDelta: true
   }
