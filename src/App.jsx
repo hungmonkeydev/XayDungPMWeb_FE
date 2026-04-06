@@ -1,9 +1,10 @@
-import UsersPage from './UsersPage'
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+import Footer from "./components/layout/Footer.jsx";
+import Header from "./components/layout/Header.jsx";
+import AdminLayout from "./pages/admin/AdminLayout.jsx";
 
 function App() {
-<<<<<<< Updated upstream
-  return
-=======
   return (
     <div>
       <Header />
@@ -11,7 +12,4 @@ function App() {
     </div>
   );
 
->>>>>>> Stashed changes
-}
-
-export default App
+export default App;
