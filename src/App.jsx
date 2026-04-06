@@ -7,11 +7,13 @@ import AdminLayout from "./pages/admin/AdminLayout.jsx";
 function App() {
   return (
     <div>
-      {/* <Header />
-      <Footer /> */}
+      <Header />
+      <Footer />
       <RouterProvider router={router} />
     </div>
   );
+
 }
+
 
 export default App;
