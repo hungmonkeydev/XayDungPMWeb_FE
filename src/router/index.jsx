@@ -1,19 +1,31 @@
-// src/router/index.jsx
-
 import { createBrowserRouter } from "react-router-dom";
 import AdminLayout from "../pages/admin/AdminLayout";
+import HomePage from "../pages/customer/HomePage";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
+
+// Tạo một Layout chung cho phía khách hàng (Customer)
+const CustomerLayout = ({ children }) => (
+  <div>
+    <Header />
+    <main>{children}</main>
+    <Footer />
+  </div>
+);
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Home Page</div>
+    element: (
+      <CustomerLayout>
+        <HomePage />
+      </CustomerLayout>
+    ),
   },
   {
     path: "/admin",
-    element: <AdminLayout />
-    // Nếu sau này muốn deep-link từng trang (ví dụ /admin/orders),
-    // hãy chuyển sang dùng <Outlet /> và thêm children routes tại đây.
-  }
+    element: <AdminLayout />, // Trang Admin thường có Header/Sidebar riêng nên không dùng CustomerLayout
+  },
 ]);
 
 export default router;
