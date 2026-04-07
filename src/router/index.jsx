@@ -6,6 +6,8 @@ import Footer from "../components/layout/Footer";
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
+import OrdersPage from "../pages/admin/OrdersPage";
+import OrderDetailPage from "../pages/admin/OrderDetailPage";
 
 // Tạo một Layout chung cho phía khách hàng (Customer)
 const CustomerLayout = ({ children }) => (
@@ -34,7 +36,8 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductsPage /> },
       { path: "products/create", element: <ProductFormPage /> },
       { path: "products/edit/:id", element: <ProductFormPage /> },
-      // { path: "orders", element: <OrdersPage /> },
+      { path: "orders", element: <OrdersPage /> },
+      { path: "orders/:id", element: <OrderDetailPage /> },
       // { path: "customers", element: <CustomersPage /> },
       // { path: "promotions", element: <PromotionsPage /> },
       // { path: "staff", element: <StaffPage /> },
