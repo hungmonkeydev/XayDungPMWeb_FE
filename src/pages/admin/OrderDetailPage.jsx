@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { mockOrders, STATUS_CFG, STATUS_FLOW, PAYMENT_STATUS_CFG } from "./_mockOrders";
 import OrderStatusStepper from "./components/orders/OrderStatusStepper";
 
-/* ── helpers ── */
+/* ── Helpers ── */
 function fmtPrice(n) {
   return "₫" + n.toLocaleString("vi-VN");
 }
@@ -77,7 +77,7 @@ export default function OrderDetailPage() {
   const canAdvance = !!nextStatus;
   const canCancel = !["completed", "cancelled"].includes(orderState.status);
 
-  /* toast helper */
+  /* Toast Helper */
   const showToast = msg => {
     setSuccessMsg(msg);
     setTimeout(() => setSuccessMsg(""), 3000);
