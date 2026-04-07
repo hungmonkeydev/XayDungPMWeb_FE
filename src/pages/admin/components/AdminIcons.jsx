@@ -83,6 +83,18 @@ const icons = {
       <path d="M8 7V4a1 1 0 011-1h7a1 1 0 011 1v12a1 1 0 01-1 1H9a1 1 0 01-1-1v-3" />
     </svg>
   ),
+  bell: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 2a6 6 0 016 6c0 3 1 4 2 5H2c1-1 2-2 2-5a6 6 0 016-6z" />
+      <path d="M8.5 17a1.5 1.5 0 003 0" />
+    </svg>
+  ),
+  search: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="9" r="6" />
+      <path d="M15 15l3 3" />
+    </svg>
+  ),
   menu: (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
       <path d="M3 5h14M3 10h14M3 15h14" />

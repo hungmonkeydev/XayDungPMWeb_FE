@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminTopbar from "./components/AdminTopbar";
-import DashboardPage from "./DashboardPage";
 
 export default function AdminLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
