@@ -69,13 +69,7 @@ const ProductDetailPage = () => {
                     <span>›</span>
                     <span className="cursor-pointer hover:text-amber-500">SOFA THÔNG MINH</span>
                     <span>›</span>
-                    <span className="text-gray-800">{product.name}</span>
-                </div>
-
-
-                {/* ================= 2. THÔNG TIN SẢN PHẨM (CHÍNH) ================= */}
-                <div className="flex flex-col md:flex-row gap-8 bg-white p-6 rounded-xl shadow-sm mb-8">
-                    
+                        <span className="text-gray-800">{product.name}</span>
                     {/* Cột Trái: Ảnh sản phẩm */}
                     <div className="w-full md:w-1/2 relative group">
                         <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden relative">
@@ -144,7 +138,6 @@ const ProductDetailPage = () => {
                         </div>
                     </div>
                 </div>
-
 
                 {/* ================= 3. PHẦN MIDDLE: TAB MÔ TẢ & KHUYẾN MÃI ================= */}
                 <div className="flex flex-col lg:flex-row gap-6 mb-8">
