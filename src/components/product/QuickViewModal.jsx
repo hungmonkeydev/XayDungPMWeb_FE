@@ -1,8 +1,10 @@
 // src/components/product/QuickViewModal.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Thêm import này
 import Button from '../ui/Button'; // <-- Thay đổi đường dẫn này nếu cần
 
 const QuickViewModal = ({ product, onClose }) => {
+    const navigate = useNavigate(); // Thêm hook này
     const [quantity, setQuantity] = useState(1);
     const [selectedMaterial, setSelectedMaterial] = useState('Da công nghiệp');
     const [selectedSize, setSelectedSize] = useState('Văng (2100*900*920)mm');
@@ -61,8 +63,8 @@ const QuickViewModal = ({ product, onClose }) => {
                                     key={mat}
                                     onClick={() => setSelectedMaterial(mat)}
                                     className={`px-4 py-2 text-sm border rounded-md transition-all duration-200 ${selectedMaterial === mat
-                                            ? 'border-amber-500 text-amber-600 font-semibold shadow-sm'
-                                            : 'border-gray-300 text-gray-600 hover:border-amber-500 hover:text-amber-500'
+                                        ? 'border-amber-500 text-amber-600 font-semibold shadow-sm'
+                                        : 'border-gray-300 text-gray-600 hover:border-amber-500 hover:text-amber-500'
                                         }`}
                                 >
                                     {mat}
@@ -77,8 +79,8 @@ const QuickViewModal = ({ product, onClose }) => {
                             <button
                                 onClick={() => setSelectedSize('Văng (2100*900*920)mm')}
                                 className={`px-4 py-2 text-sm border rounded-md transition-all duration-200 ${selectedSize === 'Văng (2100*900*920)mm'
-                                        ? 'border-amber-500 text-amber-600 font-semibold shadow-sm'
-                                        : 'border-gray-300 text-gray-600 hover:border-amber-500'
+                                    ? 'border-amber-500 text-amber-600 font-semibold shadow-sm'
+                                    : 'border-gray-300 text-gray-600 hover:border-amber-500'
                                     }`}
                             >
                                 Văng (2100*900*920)mm
@@ -137,7 +139,17 @@ const QuickViewModal = ({ product, onClose }) => {
                         <p className="line-clamp-3">
                             Mã sản phẩm: {product?.id || 'LUSF09'}. {product?.name} chất lượng cao cấp, thiết kế hiện đại sang trọng, phù hợp với mọi không gian nội thất...
                         </p>
-                        <a href="#" className="text-amber-500 font-semibold mt-2 inline-block hover:underline">Chi tiết sản phẩm</a>
+                        <a
+                            href="#"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navigate(`/san-pham/${product?.id}`);
+                                onClose();
+                            }}
+                            className="text-amber-500 font-semibold mt-2 inline-block hover:underline"
+                        >
+                            Chi tiết sản phẩm
+                        </a>
                     </div>
 
                 </div>
