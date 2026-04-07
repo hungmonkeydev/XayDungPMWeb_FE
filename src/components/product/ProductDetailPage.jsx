@@ -92,7 +92,7 @@ const ProductDetailPage = () => {
                         <div className="flex gap-2 mt-4">
                             {thumbnails.map((thumb, index) => (
                                 <button
-                                    key={index}
+                                    key={`thumb_${index}_${thumb}`}
                                     type="button"
                                     onClick={() => setSelectedImage(thumb)}
                                     className={`w-20 h-20 rounded-lg overflow-hidden transition-all duration-200 ${selectedImage === thumb ? 'border-2 border-amber-500' : 'border border-transparent opacity-70 hover:opacity-100'}`}
@@ -211,9 +211,9 @@ const ProductDetailPage = () => {
                         <h2 className="bg-amber-500 text-white font-bold text-lg py-2 px-6 rounded-t-lg relative bottom-[-2px]">
                             Sản phẩm cùng loại
                         </h2>
-                        <a href="#" className="text-sm text-gray-600 hover:text-amber-500 font-medium flex items-center gap-1 mb-1">
+                        <button onClick={(e) => e.preventDefault()} className="text-sm text-gray-600 hover:text-amber-500 font-medium flex items-center gap-1 mb-1 bg-transparent border-none cursor-pointer">
                             Xem tất cả ❯
-                        </a>
+                        </button>
                     </div>
 
                     {/* Grid chứa các ProductCard */}
