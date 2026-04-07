@@ -3,6 +3,9 @@ import AdminLayout from "../pages/admin/AdminLayout";
 import HomePage from "../pages/customer/HomePage";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import ProductDetailPage from "../components/product/ProductDetailPage"; // 1.
+
+// ADMIN
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
@@ -21,6 +24,7 @@ const CustomerLayout = ({ children }) => (
 );
 
 const router = createBrowserRouter([
+  // --- GIAO DIỆN KHÁCH HÀNG ---
   {
     path: "/",
     element: (
@@ -29,6 +33,17 @@ const router = createBrowserRouter([
       </CustomerLayout>
     )
   },
+  {
+    path: "/san-pham/:id",
+    element: (
+      // 2. BỌC LAYOUT VÀO ĐÂY ĐỂ GIỮ LẠI HEADER & FOOTER 👇
+      <CustomerLayout>
+        <ProductDetailPage />
+      </CustomerLayout>
+    )
+  },
+
+  // --- GIAO DIỆN ADMIN ---
   {
     path: "/admin",
     element: <AdminLayout />,
