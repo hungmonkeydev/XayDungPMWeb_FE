@@ -128,7 +128,14 @@ const QuickViewModal = ({ product, onClose }) => {
                             variant="danger"
                             size="lg"
                             className="flex-1 uppercase shadow-md bg-[#b32b00] hover:bg-[#992300]"
-                            onClick={() => alert(`Đã thêm ${quantity} sản phẩm vào giỏ!`)}
+                            onClick={() => {
+                                // 1. Tắt cái Modal Quick View này đi
+                                onClose();
+
+                                // 2. Chuyển cái vèo sang trang Giỏ hàng
+                                navigate('/gio-hang');
+                                window.scrollTo(0, 0);
+                            }}
                         >
                             Thêm vào giỏ
                         </Button>
