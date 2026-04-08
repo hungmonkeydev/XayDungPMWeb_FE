@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
@@ -6,13 +7,17 @@ import AdminLayout from "../pages/admin/AdminLayout";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 
-// ---- Customer pages (thành viên A) ----
+// ---- Customer pages ----
 import HomePage from "../pages/customer/HomePage";
+import ProductDetailPage from "../components/product/ProductDetailPage";
+import CartPage from "../components/cart/CartPage";
+
+// ---- Admin pages ----
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
 
-// ---- Auth pages (bạn - thành viên B) ----
+// ---- Auth pages (Logic của bạn) ----
 const LoginPage          = lazy(() => import("../pages/auth/LoginPage"));
 const RegisterPage       = lazy(() => import("../pages/auth/RegisterPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
@@ -29,13 +34,29 @@ const CustomerLayout = ({ children }) => (
 );
 
 const router = createBrowserRouter([
-  // ---- Routes khách hàng (thành viên A) ----
+  // --- GIAO DIỆN KHÁCH HÀNG ---
   {
     path: "/",
     element: <CustomerLayout><HomePage /></CustomerLayout>,
   },
+  {
+    path: "/gio-hang",
+    element: (
+      <CustomerLayout>
+        <CartPage />
+      </CustomerLayout>
+    )
+  },
+  {
+    path: "/san-pham/:id",
+    element: (
+      <CustomerLayout>
+        <ProductDetailPage />
+      </CustomerLayout>
+    ),
+  },
 
-  // ---- Routes auth (thành viên B) ----
+  // ---- ROUTES AUTH (Của bạn) ----
   {
     path: "/login",
     element: <Suspense fallback={<Loading />}><LoginPage /></Suspense>,
@@ -49,7 +70,7 @@ const router = createBrowserRouter([
     element: <Suspense fallback={<Loading />}><ForgotPasswordPage /></Suspense>,
   },
 
-  // ---- Routes admin (thành viên C) ----
+  // --- GIAO DIỆN ADMIN ---
   {
     path: "/admin",
     element: <AdminLayout />,
@@ -63,7 +84,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // ---- 404 chung ----
+  // ---- 404 CHUNG ----
   {
     path: "*",
     element: <div style={{ textAlign: "center", padding: 60 }}>404 - Không tìm thấy trang</div>,

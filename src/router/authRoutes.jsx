@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Suspense, lazy } from "react";
 
 const LoginPage          = lazy(() => import("../pages/auth/LoginPage"));
