@@ -5,13 +5,13 @@ export async function loginAPI(email, password) {
   const res = await fetch(`${BASE_URL}/customers/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password })
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Đăng nhập thất bại!");
   return {
     access_token: json.data.token,
-    user: json.data.customer,
+    user: json.data.customer
   };
 }
 
@@ -20,7 +20,7 @@ export async function registerAPI(name, email, password) {
   const res = await fetch(`${BASE_URL}/customers/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }), 
+    body: JSON.stringify({ name, email, password })
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Đăng ký thất bại!");
@@ -32,13 +32,13 @@ export async function loginGoogleAPI(googleToken) {
   const res = await fetch(`${BASE_URL}/customers/google`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ googleToken }),
+    body: JSON.stringify({ googleToken })
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Đăng nhập Google thất bại!");
   return {
     access_token: json.data.token,
-    user: json.data.customer,
+    user: json.data.customer
   };
 }
 
@@ -47,7 +47,7 @@ export async function forgotPasswordAPI(email) {
   const res = await fetch(`${BASE_URL}/customers/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email })
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Có lỗi xảy ra!");
@@ -61,8 +61,8 @@ export async function logoutAPI(token) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   } catch {
     // Dù API lỗi vẫn xóa token phía client

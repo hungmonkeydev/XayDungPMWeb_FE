@@ -16,10 +16,16 @@ import CartPage from "../components/cart/CartPage";
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
+import OrdersPage from "../pages/admin/OrdersPage";
+import OrderDetailPage from "../pages/admin/OrderDetailPage";
+import CustomersPage from "../pages/admin/CustomersPage";
+import CustomerDetailPage from "../pages/admin/CustomerDetailPage";
+import PromotionsPage from "../pages/admin/PromotionsPage";
+import StaffPage from "../pages/admin/StaffPage";
 
 // ---- Auth pages (Logic của bạn) ----
-const LoginPage          = lazy(() => import("../pages/auth/LoginPage"));
-const RegisterPage       = lazy(() => import("../pages/auth/RegisterPage"));
+const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/auth/RegisterPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
 
 const Loading = () => <div style={{ textAlign: "center", padding: 40 }}>Đang tải...</div>;
@@ -37,7 +43,11 @@ const router = createBrowserRouter([
   // --- GIAO DIỆN KHÁCH HÀNG ---
   {
     path: "/",
-    element: <CustomerLayout><HomePage /></CustomerLayout>,
+    element: (
+      <CustomerLayout>
+        <HomePage />
+      </CustomerLayout>
+    )
   },
   {
     path: "/gio-hang",
@@ -53,21 +63,33 @@ const router = createBrowserRouter([
       <CustomerLayout>
         <ProductDetailPage />
       </CustomerLayout>
-    ),
+    )
   },
 
   // ---- ROUTES AUTH (Của bạn) ----
   {
     path: "/login",
-    element: <Suspense fallback={<Loading />}><LoginPage /></Suspense>,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <LoginPage />
+      </Suspense>
+    )
   },
   {
     path: "/register",
-    element: <Suspense fallback={<Loading />}><RegisterPage /></Suspense>,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <RegisterPage />
+      </Suspense>
+    )
   },
   {
     path: "/forgot-password",
-    element: <Suspense fallback={<Loading />}><ForgotPasswordPage /></Suspense>,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ForgotPasswordPage />
+      </Suspense>
+    )
   },
 
   // --- GIAO DIỆN ADMIN ---
@@ -76,19 +98,25 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { index: true, element: <Navigate to="dashboard" /> },
-      { path: "dashboard",           element: <DashboardPage /> },
-      { path: "products",            element: <ProductsPage /> },
-      { path: "products/create",     element: <ProductFormPage /> },
-      { path: "products/edit/:id",   element: <ProductFormPage /> },
-      { path: "*",                   element: <div>404 Admin</div> },
-    ],
+      { path: "dashboard", element: <DashboardPage /> },
+      { path: "products", element: <ProductsPage /> },
+      { path: "products/create", element: <ProductFormPage /> },
+      { path: "products/edit/:id", element: <ProductFormPage /> },
+      { path: "orders", element: <OrdersPage /> },
+      { path: "orders/:id", element: <OrderDetailPage /> },
+      { path: "customers", element: <CustomersPage /> },
+      { path: "customers/detail/:id", element: <CustomerDetailPage /> },
+      { path: "promotions", element: <PromotionsPage /> },
+      { path: "staff", element: <StaffPage /> },
+      { path: "*", element: <div>404 Admin</div> }
+    ]
   },
 
   // ---- 404 CHUNG ----
   {
     path: "*",
-    element: <div style={{ textAlign: "center", padding: 60 }}>404 - Không tìm thấy trang</div>,
-  },
+    element: <div style={{ textAlign: "center", padding: 60 }}>404 - Không tìm thấy trang</div>
+  }
 ]);
 
 export default router;
