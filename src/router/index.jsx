@@ -13,6 +13,7 @@ import OrdersPage from "../pages/admin/OrdersPage";
 import OrderDetailPage from "../pages/admin/OrderDetailPage";
 import CustomersPage from "../pages/admin/CustomersPage";
 import CustomerDetailPage from "../pages/admin/CustomerDetailPage";
+import PromotionsPage from "../pages/admin/PromotionsPage";
 
 // Tạo một Layout chung cho phía khách hàng (Customer)
 const CustomerLayout = ({ children }) => (
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
       { path: "orders/:id", element: <OrderDetailPage /> },
       { path: "customers", element: <CustomersPage /> },
       { path: "customers/detail/:id", element: <CustomerDetailPage /> },
-      // { path: "promotions", element: <PromotionsPage /> },
+      { path: "promotions", element: <PromotionsPage /> },
       // { path: "staff", element: <StaffPage /> },
       { path: "*", element: <div>404 Admin</div> }
     ]
