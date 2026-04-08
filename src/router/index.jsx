@@ -3,17 +3,13 @@ import AdminLayout from "../pages/admin/AdminLayout";
 import HomePage from "../pages/customer/HomePage";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-<<<<<<< Updated upstream
-=======
 import ProductDetailPage from "../components/product/ProductDetailPage";
 import CartPage from "../components/cart/CartPage";
 
 // ADMIN
->>>>>>> Stashed changes
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
-import ProductDetailPage from "../components/product/ProductDetailPage";// 1.
 
 // Tạo một Layout chung cho phía khách hàng (Customer)
 const CustomerLayout = ({ children }) => (
@@ -35,9 +31,6 @@ const router = createBrowserRouter([
     )
   },
   {
-<<<<<<< Updated upstream
-    path: "/san-pham/:id", 
-=======
     path: "/gio-hang",
     element: (
       <CustomerLayout>
@@ -47,7 +40,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/san-pham/:id",
->>>>>>> Stashed changes
+
     element: (
       // 2. BỌC LAYOUT VÀO ĐÂY ĐỂ GIỮ LẠI HEADER & FOOTER 👇
       <CustomerLayout>
