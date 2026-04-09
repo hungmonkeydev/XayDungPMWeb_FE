@@ -1,6 +1,7 @@
 // src/pages/admin/components/dashboard/RecentOrders.jsx
 
 import { recentOrders } from "../../_mockData";
+import { useNavigate } from "react-router-dom";
 
 const STATUS_CFG = {
   completed: { label: "Hoàn tất", cls: "bg-emerald-50 text-emerald-700" },
@@ -16,15 +17,20 @@ const METHOD_CFG = {
 };
 
 export default function RecentOrders() {
+  const navigate = useNavigate();
   return (
     <div className="bg-white border border-stone-100 rounded-2xl p-5 hover:border-stone-200 transition-all duration-200">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-stone-900">Đơn hàng gần đây</h3>
-          <p className="text-xs text-stone-400 mt-0.5">5 đơn hàng mới nhất</p>
         </div>
-        <button className="text-xs text-stone-500 font-medium hover:text-stone-900 transition-colors px-3 py-1.5 rounded-lg hover:bg-stone-50">Xem tất cả →</button>
+        <button
+          onClick={() => navigate(`/admin/orders`)}
+          className="text-xs text-stone-500 font-medium hover:text-stone-900 transition-colors px-3 py-1.5 rounded-lg hover:bg-stone-50"
+        >
+          Xem tất cả →
+        </button>
       </div>
 
       {/* Table */}
@@ -43,7 +49,7 @@ export default function RecentOrders() {
             {recentOrders.map(order => {
               const status = STATUS_CFG[order.status];
               return (
-                <tr key={order.id} className="hover:bg-stone-50/50 transition-colors cursor-pointer">
+                <tr key={order.id} onClick={() => navigate(`/admin/orders/${order.id}`)} className="hover:bg-stone-50/50 transition-colors cursor-pointer">
                   <td className="py-3 px-1">
                     <span className="text-xs font-mono font-semibold text-stone-700">{order.id}</span>
                   </td>
