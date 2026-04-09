@@ -5,8 +5,7 @@ import AdminIcon from "../AdminIcons";
 const ICON_STYLE = {
   revenue: "bg-blue-50   text-blue-600",
   orders: "bg-violet-50 text-violet-600",
-  customers: "bg-emerald-50 text-emerald-600",
-  cancel: "bg-rose-50   text-rose-600"
+  customers: "bg-emerald-50 text-emerald-600"
 };
 
 export default function StatCard({ label, value, icon }) {
