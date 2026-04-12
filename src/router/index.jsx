@@ -3,20 +3,14 @@ import AdminLayout from "../pages/admin/AdminLayout";
 import HomePage from "../pages/customer/HomePage";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-<<<<<<< Updated upstream
-import ProductDetailPage from "../components/product/ProductDetailPage";
+import ProductDetailPage from "../pages/customer/ProductDetailPage";
 import CartPage from "../components/cart/CartPage";
 
 // ADMIN
-=======
 
 // ---- Customer pages ----
-import HomePage from "../pages/customer/HomePage";
-import ProductDetailPage from "../pages/customer/ProductDetailPage";
-import CartPage from "../components/cart/CartPage";
 import ProductListPage from '../pages/customer/ProductListPage';
 // ---- Admin pages ----
->>>>>>> Stashed changes
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
