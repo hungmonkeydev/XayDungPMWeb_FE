@@ -9,7 +9,8 @@ import Footer from "../components/layout/Footer";
 
 // ---- Customer pages ----
 import HomePage from "../pages/customer/HomePage";
-import ProductDetailPage from "../components/product/ProductDetailPage";
+import ProductListPage from '../pages/customer/ProductListPage';
+import ProductDetailPage from "../pages/customer/ProductDetailPage";
 import CartPage from "../components/cart/CartPage";
 
 // ---- Admin pages ----
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         <CartPage />
       </CustomerLayout>
     )
+  },
+  {
+    path: "/products",
+    element: (<CustomerLayout><ProductListPage /></CustomerLayout>)
   },
   {
     path: "/san-pham/:id",
