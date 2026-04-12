@@ -1,21 +1,37 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { Suspense, lazy } from "react";
+
+// ---- Layout ----
 import AdminLayout from "../pages/admin/AdminLayout";
-import HomePage from "../pages/customer/HomePage";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+
+// ---- Customer pages ----
+import HomePage from "../pages/customer/HomePage";
+import ProductListPage from '../pages/customer/ProductListPage';
 import ProductDetailPage from "../pages/customer/ProductDetailPage";
 import CartPage from "../components/cart/CartPage";
 
-// ADMIN
-
-// ---- Customer pages ----
-import ProductListPage from '../pages/customer/ProductListPage';
 // ---- Admin pages ----
 import DashboardPage from "../pages/admin/DashboardPage";
 import ProductsPage from "../pages/admin/ProductsPage";
 import ProductFormPage from "../pages/admin/ProductFormPage";
+import OrdersPage from "../pages/admin/OrdersPage";
+import OrderDetailPage from "../pages/admin/OrderDetailPage";
+import CustomersPage from "../pages/admin/CustomersPage";
+import CustomerDetailPage from "../pages/admin/CustomerDetailPage";
+import PromotionsPage from "../pages/admin/PromotionsPage";
+import StaffPage from "../pages/admin/StaffPage";
 
-// Tạo một Layout chung cho phía khách hàng (Customer)
+// ---- Auth pages (Logic của bạn) ----
+const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/auth/RegisterPage"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
+
+const Loading = () => <div style={{ textAlign: "center", padding: 40 }}>Đang tải...</div>;
+
+// ---- Layout khách hàng ----
 const CustomerLayout = ({ children }) => (
   <div>
     <Header />
@@ -48,13 +64,37 @@ const router = createBrowserRouter([
   },
   {
     path: "/san-pham/:id",
-
     element: (
-      // 2. BỌC LAYOUT VÀO ĐÂY ĐỂ GIỮ LẠI HEADER & FOOTER 👇
       <CustomerLayout>
         <ProductDetailPage />
       </CustomerLayout>
-    ),
+    )
+  },
+
+  // ---- ROUTES AUTH (Của bạn) ----
+  {
+    path: "/login",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <LoginPage />
+      </Suspense>
+    )
+  },
+  {
+    path: "/register",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <RegisterPage />
+      </Suspense>
+    )
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ForgotPasswordPage />
+      </Suspense>
+    )
   },
 
   // --- GIAO DIỆN ADMIN ---
@@ -67,12 +107,20 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductsPage /> },
       { path: "products/create", element: <ProductFormPage /> },
       { path: "products/edit/:id", element: <ProductFormPage /> },
-      // { path: "orders", element: <OrdersPage /> },
-      // { path: "customers", element: <CustomersPage /> },
-      // { path: "promotions", element: <PromotionsPage /> },
-      // { path: "staff", element: <StaffPage /> },
+      { path: "orders", element: <OrdersPage /> },
+      { path: "orders/:id", element: <OrderDetailPage /> },
+      { path: "customers", element: <CustomersPage /> },
+      { path: "customers/detail/:id", element: <CustomerDetailPage /> },
+      { path: "promotions", element: <PromotionsPage /> },
+      { path: "staff", element: <StaffPage /> },
       { path: "*", element: <div>404 Admin</div> }
     ]
+  },
+
+  // ---- 404 CHUNG ----
+  {
+    path: "*",
+    element: <div style={{ textAlign: "center", padding: 60 }}>404 - Không tìm thấy trang</div>
   }
 ]);
 

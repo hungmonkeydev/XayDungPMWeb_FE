@@ -11,7 +11,7 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-5 max-w-[1400px]">
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {dashboardStats.map(s => (
           <StatCard key={s.id} {...s} />
         ))}
