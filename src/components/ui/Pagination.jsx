@@ -1,12 +1,11 @@
 import React from 'react';
 
 const Pagination = ({
-    currentPage,   // Trang hiện tại đang đứng (VD: Trang 2)
-    totalPages,    // Tổng số trang (VD: 10 trang)
-    onPageChange   // Hàm xử lý khi khách hàng bấm chuyển trang
+    currentPage,   
+    totalPages,    
+    onPageChange   
 }) => {
 
-    // 1. CHỐT CHẶN: Nếu dữ liệu ít, chỉ có 1 trang (hoặc 0 trang) thì ẩn luôn thanh phân trang cho gọn
     if (totalPages <= 1) return null;
 
     // 2. Tạo ra một mảng các số từ 1 đến totalPages để in ra các nút bấm

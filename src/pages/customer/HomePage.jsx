@@ -11,7 +11,6 @@ const HomePage = () => {
     const { products, loading } = useProducts({ limit: 50 });
     
     // 2. Tự dùng Code Frontend tách ra theo Category ID
-    // Thêm product || [] để đề phòng trường hợp products lúc đầu là undefined
     const safeProducts = products || [];
     const kitchenProducts = safeProducts.filter(p => p.categoryId === 30003).slice(0, 8);
     const livingRoomProducts = safeProducts.filter(p => p.categoryId === 30002).slice(0, 8);

@@ -1,5 +1,4 @@
 import React from "react";
-// Khởi tạo component Button, nhận vào các props (những thuộc tính truyền từ nơi khác vào)
 const Button = ({
     children,
     onClick,
