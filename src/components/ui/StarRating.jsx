@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
-// Nhận vào các props để tùy biến ngôi sao
 const StarRating = ({
-    rating = 0,         // Điểm đánh giá hiện tại (VD: 4 sao)
-    maxRating = 5,      // Tổng số sao hiển thị (thường luôn là 5)
-    readOnly = false,   // Chế độ chỉ đọc: true (chỉ xem), false (cho phép click chọn sao)
-    onRatingChange,     // Hàm xử lý khi khách hàng click chọn 1 ngôi sao
-    size = 'md'         // Kích thước sao (sm, md, lg)
+    rating = 0,         
+    maxRating = 5,      
+    readOnly = false,   
+    onRatingChange,     
+    size = 'md'         
 }) => {
 
     // 1. STATE HIỆU ỨNG: Dùng để nhớ vị trí khách đang rê chuột (hover) tới ngôi sao thứ mấy
@@ -26,9 +25,6 @@ const StarRating = ({
                 const starValue = index + 1; // Giá trị của sao hiện tại (1, 2, 3, 4, 5)
 
                 // 4. LOGIC TÔ MÀU SAO (Quan trọng nhất):
-                // Sao sẽ sáng (màu vàng) NẾU:
-                // - Khách đang rê chuột vào nó (hoặc các sao trước nó) -> hoverRating >= starValue
-                // - HOẶC nếu không rê chuột, thì tô theo điểm số thực tế -> rating >= starValue
                 const isFilled = (hoverRating || rating) >= starValue;
 
                 return (
