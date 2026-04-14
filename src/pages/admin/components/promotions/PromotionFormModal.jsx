@@ -1,7 +1,7 @@
 // src/pages/admin/components/promotions/PromotionFormModal.jsx
 
 import { useState } from "react";
-import { mockCategories } from "../../_mockProducts";
+import useCategories from "../../../../hooks/useCategories";
 
 const INIT_FORM = {
   code: "",
@@ -11,8 +11,7 @@ const INIT_FORM = {
   value: "",
   startDay: "",
   endDay: "",
-  isActive: true,
-  categoryIds: []
+  isActive: true
 };
 
 const today = new Date().toISOString().split("T")[0];
@@ -31,32 +30,40 @@ function InputField({ label, required, error, children }) {
 }
 
 export default function PromotionFormModal({ promotion, onClose, onSave }) {
+  const { categories } = useCategories();
   const isEdit = !!promotion;
 
   const [form, setForm] = useState(
     isEdit
       ? {
           ...promotion,
-          categoryIds: promotion.categories.map(c => c.id)
+          categoryIds: promotion.categoryIds || []
         }
       : { ...INIT_FORM }
   );
+
+  const allSelected = categories.length > 0 && (form.categoryIds || []).length === categories.length;
   const [errors, setErrors] = useState({});
 
   const handle = key => e => setForm(f => ({ ...f, [key]: e.target.value }));
 
   const toggleCategory = id => {
-    setForm(f => ({
-      ...f,
-      categoryIds: f.categoryIds.includes(id) ? f.categoryIds.filter(c => c !== id) : [...f.categoryIds, id]
-    }));
+    setForm(f => {
+      const ids = f.categoryIds || [];
+
+      return {
+        ...f,
+        categoryIds: ids.includes(id) ? ids.filter(c => c !== id) : [...ids, id]
+      };
+    });
   };
 
   const toggleAllCategories = () => {
-    const allIds = mockCategories.map(c => c.id);
+    const allIds = categories.map(c => c.id);
+
     setForm(f => ({
       ...f,
-      categoryIds: f.categoryIds.length === allIds.length ? [] : allIds
+      categoryIds: (f.categoryIds || []).length === allIds.length ? [] : allIds
     }));
   };
 
@@ -97,7 +104,7 @@ export default function PromotionFormModal({ promotion, onClose, onSave }) {
       e.endDay = "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu";
     }
     if (form.startDay && form.endDay && form.startDay > form.endDay) e.endDay = "Ngày kết thúc phải sau ngày bắt đầu";
-    if (form.categoryIds.length === 0) e.categoryIds = "Chọn ít nhất 1 danh mục";
+    if (!form.categoryIds || form.categoryIds.length === 0) e.categoryIds = "Chọn ít nhất 1 danh mục";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -107,8 +114,6 @@ export default function PromotionFormModal({ promotion, onClose, onSave }) {
     // TODO: gọi API POST/PUT /promotions
     onSave(form);
   };
-
-  const allSelected = form.categoryIds.length === mockCategories.length;
 
   return (
     /* Backdrop */
@@ -261,23 +266,13 @@ export default function PromotionFormModal({ promotion, onClose, onSave }) {
               </label>
 
               <div className="border-t border-stone-100 pt-2 grid grid-cols-2 gap-1">
-                {mockCategories.map(cat => {
-                  const checked = form.categoryIds.includes(cat.id);
+                {categories.map(cat => {
+                  const checked = (form.categoryIds || []).includes(cat.id);
+
                   return (
-                    <label key={cat.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-stone-50 transition-colors">
-                      <div
-                        onClick={() => toggleCategory(cat.id)}
-                        className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 cursor-pointer border-2 transition-colors ${
-                          checked ? "bg-stone-900 border-stone-900" : "border-stone-300 hover:border-stone-500"
-                        }`}
-                      >
-                        {checked && (
-                          <svg viewBox="0 0 10 10" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
-                            <path d="M2 5l2.5 2.5L8 3" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="text-xs text-stone-700">{cat.name}</span>
+                    <label key={cat.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-stone-50">
+                      <div onClick={() => toggleCategory(cat.id)} className={`w-4 h-4 border-2 ${checked ? "bg-stone-900 border-stone-900" : "border-stone-300"}`} />
+                      <span className="text-xs">{cat.name}</span>
                     </label>
                   );
                 })}
