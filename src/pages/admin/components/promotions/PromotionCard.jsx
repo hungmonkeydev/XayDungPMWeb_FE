@@ -1,6 +1,6 @@
 // src/pages/admin/components/promotions/PromotionCard.jsx
 
-import { getPromotionStatus, PROMO_STATUS_CFG } from "../../_mockPromotions";
+import useCategories from "../../../../hooks/useCategories";
 
 function fmtDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("vi-VN", {
@@ -23,12 +23,36 @@ function daysUntil(startDay) {
   return `Bắt đầu sau ${diff} ngày`;
 }
 
+function getPromotionStatus(promotion) {
+  const now = new Date();
+  const start = new Date(promotion.startDay);
+  const end = new Date(promotion.endDay);
+  end.setHours(23, 59, 59);
+
+  if (!promotion.isActive) return "inactive";
+  if (now < start) return "upcoming";
+
+  const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  if (now <= end && diffDays <= 3) return "expiring";
+  if (now <= end) return "active";
+  return "expired";
+}
+
+const PROMO_STATUS_CFG = {
+  active: { label: "Đang chạy", cls: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  expiring: { label: "Sắp hết hạn", cls: "bg-amber-50 text-amber-700", dot: "bg-amber-400" },
+  upcoming: { label: "Sắp diễn ra", cls: "bg-blue-50 text-blue-700", dot: "bg-blue-400" },
+  expired: { label: "Hết hạn", cls: "bg-stone-100 text-stone-500", dot: "bg-stone-400" },
+  inactive: { label: "Tắt", cls: "bg-stone-100 text-stone-400", dot: "bg-stone-300" }
+};
+
 const ALL_CAT_IDS = [1, 2, 3, 4, 5, 6];
 
 export default function PromotionCard({ promotion, onEdit, onToggleStatus }) {
+  const { categories } = useCategories();
   const status = getPromotionStatus(promotion);
   const scfg = PROMO_STATUS_CFG[status];
-  const isAllCat = promotion.categories.length >= ALL_CAT_IDS.length;
+  const categoryList = promotion.categoryIds?.map(id => categories.find(c => c.id === id)).filter(Boolean) || [];
   const timeNote = status === "upcoming" ? daysUntil(promotion.startDay) : daysLeft(promotion.endDay);
 
   return (
@@ -78,11 +102,11 @@ export default function PromotionCard({ promotion, onEdit, onToggleStatus }) {
 
       {/* ── Categories ── */}
       <div className="flex flex-wrap gap-1.5">
-        {isAllCat ? (
-          <span className="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">Tất cả danh mục</span>
+        {categoryList.length === 0 ? (
+          <span className="text-[10px] text-stone-400">Tất cả sản phẩm</span>
         ) : (
-          promotion.categories.map(cat => (
-            <span key={cat.id} className="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">
+          categoryList.map(cat => (
+            <span key={cat.id} className="text-[10px] bg-stone-100 px-2 py-0.5 rounded-full">
               {cat.name}
             </span>
           ))

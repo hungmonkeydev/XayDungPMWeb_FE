@@ -1,19 +1,51 @@
 // src/pages/admin/PromotionsPage.jsx
 
 import { useState, useMemo } from "react";
-import { mockPromotions, getPromotionStatus } from "./_mockPromotions";
+import usePromotions from "../../hooks/usePromotions";
 import PromotionStatsBar from "./components/promotions/PromotionStatsBar";
 import PromotionFilters from "./components/promotions/PromotionFilters";
 import PromotionCard from "./components/promotions/PromotionCard";
 import PromotionFormModal from "./components/promotions/PromotionFormModal";
 
+/* ── Helpers ── */
+
+function getPromotionStatus(promotion) {
+  const now = new Date();
+  const start = new Date(promotion.startDay);
+  const end = new Date(promotion.endDay);
+  end.setHours(23, 59, 59);
+
+  if (!promotion.isActive) return "inactive";
+  if (now < start) return "upcoming";
+
+  const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  if (now <= end && diffDays <= 3) return "expiring";
+  if (now <= end) return "active";
+  return "expired";
+}
+
+const PROMO_STATUS_CFG = {
+  active: { label: "Đang chạy", cls: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  expiring: { label: "Sắp hết hạn", cls: "bg-amber-50   text-amber-700", dot: "bg-amber-400" },
+  upcoming: { label: "Sắp diễn ra", cls: "bg-blue-50    text-blue-700", dot: "bg-blue-400" },
+  expired: { label: "Hết hạn", cls: "bg-stone-100  text-stone-500", dot: "bg-stone-400" },
+  inactive: { label: "Tắt", cls: "bg-stone-100  text-stone-400", dot: "bg-stone-300" }
+};
+
 const INIT_FILTERS = { search: "", status: "", type: "" };
 
 export default function PromotionsPage() {
-  const [promotions, setPromotions] = useState(mockPromotions);
+  const { promotions, loading, error, refetch, savePromotion, toggleStatus } = usePromotions();
+
   const [filters, setFilters] = useState(INIT_FILTERS);
   const [modal, setModal] = useState(null); // null | "create" | promotion object
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState({ msg: "", type: "success" });
+
+  /* ── Toast ── */
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast({ msg: "", type: "success" }), 3000);
+  };
 
   /* ── Filter ── */
   const filtered = useMemo(() => {
@@ -28,68 +60,90 @@ export default function PromotionsPage() {
     });
   }, [promotions, filters]);
 
-  /* ── Grouped by status for ordered display ── */
+  /* ── Sort by status ── */
   const grouped = useMemo(() => {
     const ORDER = ["active", "expiring", "upcoming", "expired", "inactive"];
     return [...filtered].sort((a, b) => ORDER.indexOf(getPromotionStatus(a)) - ORDER.indexOf(getPromotionStatus(b)));
   }, [filtered]);
 
-  /* ── Helpers ── */
-  const showToast = msg => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3000);
-  };
-
-  const handleToggleStatus = promo => {
-    // TODO: gọi API PATCH /promotions/:id { isActive: !promo.isActive }
-    setPromotions(prev => prev.map(p => (p.id === promo.id ? { ...p, isActive: !p.isActive } : p)));
-    showToast(promo.isActive ? `Đã tắt khuyến mãi "${promo.code}"` : `Đã bật lại "${promo.code}"`);
-  };
-
-  const handleSave = formData => {
-    if (typeof modal === "object" && modal !== null) {
-      // Edit
-      setPromotions(prev =>
-        prev.map(p =>
-          p.id === modal.id
-            ? {
-                ...p,
-                ...formData,
-                categories: formData.categoryIds.map(id => ({
-                  id,
-                  name: ["", "Phòng khách", "Phòng ngủ", "Phòng ăn", "Phòng làm việc", "Phòng bếp", "Ngoài trời"][id]
-                }))
-              }
-            : p
-        )
-      );
-      showToast(`Đã lưu thay đổi cho "${formData.code}"`);
-    } else {
-      // Create
-      const newPromo = {
-        ...formData,
-        id: Date.now(),
-        usageCount: 0,
-        categories: formData.categoryIds.map(id => ({
-          id,
-          name: ["", "Phòng khách", "Phòng ngủ", "Phòng ăn", "Phòng làm việc", "Phòng bếp", "Ngoài trời"][id]
-        }))
-      };
-      setPromotions(prev => [newPromo, ...prev]);
-      showToast(`Đã tạo khuyến mãi "${formData.code}"`);
+  /* ── Toggle activate / deactivate ── */
+  const handleToggleStatus = async promo => {
+    try {
+      await toggleStatus(promo);
+      showToast(promo.isActive ? `Đã tắt khuyến mãi "${promo.code}"` : `Đã bật lại "${promo.code}"`);
+    } catch {
+      showToast(`Không thể thay đổi trạng thái "${promo.code}". Vui lòng thử lại.`, "error");
     }
-    setModal(null);
   };
 
+  /* ── Create / Update ── */
+  const handleSave = async formData => {
+    const isEditing = typeof modal === "object" && modal !== null;
+    try {
+      await savePromotion(formData, isEditing ? modal : null);
+      showToast(isEditing ? `Đã lưu thay đổi cho "${formData.code}"` : `Đã tạo khuyến mãi "${formData.code}"`);
+      setModal(null);
+    } catch (err) {
+      const msg = err?.response?.data?.message ?? "Lưu thất bại. Vui lòng thử lại.";
+      showToast(msg, "error");
+    }
+  };
+
+  /* ── Loading ── */
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[300px]">
+        <div className="flex flex-col items-center gap-3 text-stone-400">
+          <svg className="w-6 h-6 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+          </svg>
+          <span className="text-sm font-medium">Đang tải dữ liệu...</span>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Error ── */
+  if (error) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[300px]">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-rose-500">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4M12 16h.01" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-stone-700">{error}</p>
+          <button onClick={refetch} className="text-xs font-semibold text-stone-500 hover:text-stone-900 underline underline-offset-2">
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Render ── */
   return (
     <div className="p-6 space-y-5 max-w-[1400px]">
       {/* Toast */}
-      {toast && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-2 bg-stone-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg">
-          <svg viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-shrink-0">
-            <path d="M5 10l4 4 6-7" />
-          </svg>
-          {toast}
+      {toast.msg && (
+        <div
+          className={`fixed top-5 right-5 z-50 flex items-center gap-2 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg transition-all ${
+            toast.type === "error" ? "bg-rose-600" : "bg-stone-900"
+          }`}
+        >
+          {toast.type === "error" ? (
+            <svg viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-shrink-0">
+              <circle cx="10" cy="10" r="8" />
+              <path d="M10 6v4M10 14h.01" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-shrink-0">
+              <path d="M5 10l4 4 6-7" />
+            </svg>
+          )}
+          {toast.msg}
         </div>
       )}
 
@@ -111,7 +165,7 @@ export default function PromotionsPage() {
       </div>
 
       {/* Stats */}
-      <PromotionStatsBar />
+      <PromotionStatsBar promotions={promotions} />
 
       {/* Filters */}
       <PromotionFilters filters={filters} onChange={setFilters} onReset={() => setFilters(INIT_FILTERS)} total={filtered.length} />

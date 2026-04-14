@@ -40,7 +40,7 @@ export default function StaffFormModal({ staff, onClose, onSave }) {
     if (!form.email.trim()) e.email = "Email không được trống";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Email không hợp lệ";
     if (!isEdit && !form.password) e.password = "Mật khẩu không được trống";
-    if (form.password && form.password.length < 8) e.password = "Mật khẩu phải có ít nhất 8 ký tự";
+    if (form.password && form.password.length < 6) e.password = "Mật khẩu phải có ít nhất 6 ký tự";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -112,7 +112,7 @@ export default function StaffFormModal({ staff, onClose, onSave }) {
             <div className="relative">
               <input
                 type={showPw ? "text" : "password"}
-                placeholder={isEdit ? "Nhập mật khẩu mới..." : "Tối thiểu 8 ký tự"}
+                placeholder={isEdit ? "Nhập mật khẩu mới..." : "Tối thiểu 6 ký tự"}
                 value={form.password}
                 onChange={handle("password")}
                 className={`border rounded-lg pl-3 pr-10 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none w-full transition-colors ${
