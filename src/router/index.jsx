@@ -11,7 +11,7 @@ import Footer from "../components/layout/Footer";
 import HomePage from "../pages/customer/HomePage";
 import ProductListPage from '../pages/customer/ProductListPage';
 import ProductDetailPage from "../pages/customer/ProductDetailPage";
-import CartPage from "../pages/customer/CartPage";
+import CartPage from "../pages/customer/CartPage"; // Đã giữ 1 import đúng, xóa import trùng
 
 // ---- Admin pages ----
 import DashboardPage from "../pages/admin/DashboardPage";
@@ -24,31 +24,42 @@ import CustomerDetailPage from "../pages/admin/CustomerDetailPage";
 import PromotionsPage from "../pages/admin/PromotionsPage";
 import StaffPage from "../pages/admin/StaffPage";
 
-// ---- Auth pages ----
+// ---- Lazy load pages (Auth, Account, Checkout) ----
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/auth/RegisterPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
 
+const ProfilePage = lazy(() => import("../pages/account/ProfilePage"));
+const AddressPage = lazy(() => import("../pages/account/AddressPage"));
+const OrderHistoryPage = lazy(() => import("../pages/account/OrderHistoryPage"));
+const OrderDetailPageAccount = lazy(() => import("../pages/account/OrderDetailPage"));
+
+const CheckoutPage = lazy(() => import("../pages/checkout/CheckoutPage"));
+const PaymentPage = lazy(() => import("../pages/checkout/PaymentPage"));
+const OrderSuccessPage = lazy(() => import("../pages/checkout/OrderSuccessPage"));
+
 const Loading = () => <div style={{ textAlign: "center", padding: 40 }}>Đang tải...</div>;
 
-// ---- Layout khách hàng ----
-const CustomerLayout = ({ children }) => (
+// ---- Layout khách hàng (Dùng Outlet chuẩn React Router v6) ----
+const CustomerLayout = () => (
   <div>
     <Header />
-    <main>{children}</main>
+    <main>
+      <Outlet />
+    </main>
     <Footer />
   </div>
 );
 
-// ==== BƯỚC QUAN TRỌNG: TẠO ROOT LAYOUT CHỨA SCROLL ====
+// ==== ROOT LAYOUT CHỨA SCROLL VÀ SUSPENSE ====
 const RootLayout = () => {
   return (
     <>
-      {/* Tính năng tự động cuộn lên đầu của React Router v6 */}
       <ScrollRestoration />
-      
-      {/* Outlet là nơi render các route con bên dưới */}
-      <Outlet />
+      {/* Bọc Suspense ở đây để áp dụng cho mọi trang Lazy load */}
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
     </>
   );
 };
@@ -58,68 +69,39 @@ const router = createBrowserRouter([
     // Bọc toàn bộ ứng dụng bằng RootLayout này
     element: <RootLayout />,
     children: [
-      // --- GIAO DIỆN KHÁCH HÀNG ---
+      // --- NHÓM GIAO DIỆN KHÁCH HÀNG (Có Header & Footer) ---
       {
-        path: "/",
-        element: (
-          <CustomerLayout>
-            <HomePage />
-          </CustomerLayout>
-        )
-      },
-      {
-        path: "/gio-hang",
-        element: (
-          <CustomerLayout>
-            <CartPage />
-          </CustomerLayout>
-        )
-      },
-      {
-        path: "/products",
-        element: (<CustomerLayout><ProductListPage /></CustomerLayout>)
-      },
-      {
-        path: "/san-pham/:id",
-        element: (
-          <CustomerLayout>
-            <ProductDetailPage />
-          </CustomerLayout>
-        )
+        element: <CustomerLayout />,
+        children: [
+          { path: "/", element: <HomePage /> },
+          { path: "/gio-hang", element: <CartPage /> },
+          { path: "/products", element: <ProductListPage /> },
+          { path: "/san-pham/:id", element: <ProductDetailPage /> },
+
+          // -- Account --
+          { path: "/profile", element: <ProfilePage /> },
+          { path: "/address", element: <AddressPage /> },
+          { path: "/orders", element: <OrderHistoryPage /> },
+          { path: "/orders/:id", element: <OrderDetailPageAccount /> },
+
+          // -- Checkout --
+          { path: "/checkout", element: <CheckoutPage /> },
+          { path: "/payment", element: <PaymentPage /> },
+          { path: "/order-success", element: <OrderSuccessPage /> },
+        ]
       },
 
-      // ---- ROUTES AUTH ----
-      {
-        path: "/login",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <LoginPage />
-          </Suspense>
-        )
-      },
-      {
-        path: "/register",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <RegisterPage />
-          </Suspense>
-        )
-      },
-      {
-        path: "/forgot-password",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ForgotPasswordPage />
-          </Suspense>
-        )
-      },
+      // --- NHÓM ROUTES AUTH (Không có Header & Footer) ---
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
+      { path: "/forgot-password", element: <ForgotPasswordPage /> },
 
-      // --- GIAO DIỆN ADMIN ---
+      // --- NHÓM GIAO DIỆN ADMIN ---
       {
         path: "/admin",
         element: <AdminLayout />,
         children: [
-          { index: true, element: <Navigate to="dashboard" /> },
+          { index: true, element: <Navigate to="dashboard" replace /> },
           { path: "dashboard", element: <DashboardPage /> },
           { path: "products", element: <ProductsPage /> },
           { path: "products/create", element: <ProductFormPage /> },

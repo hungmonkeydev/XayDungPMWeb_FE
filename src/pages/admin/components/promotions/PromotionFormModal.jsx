@@ -66,7 +66,7 @@ export default function PromotionFormModal({ promotion, onClose, onSave }) {
     setForm(f => ({
       ...f,
       startDay: value,
-      endDay: f.endDay && f.endDay < value ? value : f.endDay // fix nếu end < start
+      endDay: f.endDay && f.endDay < value ? value : f.endDay
     }));
   };
 
@@ -76,7 +76,7 @@ export default function PromotionFormModal({ promotion, onClose, onSave }) {
     setForm(f => ({
       ...f,
       endDay: value,
-      startDay: f.startDay && value < f.startDay ? value : f.startDay // fix ngược lại
+      startDay: f.startDay && value < f.startDay ? value : f.startDay
     }));
   };
 

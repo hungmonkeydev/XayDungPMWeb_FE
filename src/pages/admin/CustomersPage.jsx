@@ -61,12 +61,6 @@ export default function CustomersPage() {
           <h2 className="text-lg font-bold text-stone-900 tracking-tight">Khách hàng</h2>
           <p className="text-xs text-stone-400 mt-0.5">Quản lý tài khoản, xem lịch sử mua hàng và trạng thái khách hàng</p>
         </div>
-        <button className="flex items-center gap-2 border border-stone-200 text-stone-700 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-stone-50 active:scale-95 transition-all duration-150 flex-shrink-0">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
-            <path d="M2 4h12M4 8h8M6 12h4" />
-          </svg>
-          Xuất Excel
-        </button>
       </div>
 
       {/* Stats */}

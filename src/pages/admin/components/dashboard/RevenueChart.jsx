@@ -11,9 +11,9 @@ export default function RevenueChart() {
   const total = revenueChart.reduce((s, d) => s + d.value, 0);
 
   return (
-    <div className="bg-white border border-stone-100 rounded-2xl p-5 hover:border-stone-200 transition-all duration-200">
+    <div className="bg-white border border-stone-100 rounded-2xl p-2.5 hover:border-stone-200 transition-all duration-200">
       {/* Header */}
-      <div className="flex items-start justify-between mb-5">
+      <div className="flex items-start justify-between mb-5 px-1">
         <div>
           <h3 className="text-sm font-semibold text-stone-900">Doanh thu 7 ngày</h3>
           <p className="text-xs text-stone-400 mt-0.5">Đơn vị: triệu đồng</p>
@@ -24,7 +24,7 @@ export default function RevenueChart() {
       </div>
 
       {/* Bars */}
-      <div className="flex items-end gap-2 h-[110px]">
+      <div className="flex items-end gap-2 h-[110px] px-1">
         {revenueChart.map(d => {
           const pct = (d.value / max) * 100;
           const isToday = d.day === todayLabel;
