@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../hooks/useAuth";
 import { InputField, ErrorBox, SubmitButton, Divider, GoogleButton, AuthCard, AuthPage } from "./authComponents";
+import { validateRegisterForm } from "../../utils/validators";
 
 export default function RegisterPage() {
   const [name, setName]               = useState("");
@@ -24,16 +25,10 @@ export default function RegisterPage() {
   });
 
   const handleSubmit = async () => {
+    const err = validateRegisterForm({ name, email, password, confirmPass });
+    if (err) { setLocalError(err); return; }
     setLocalError("");
-    if (!name || !email || !password || !confirmPass) {
-      setLocalError("Vui lòng điền đầy đủ thông tin!"); return;
-    }
-    if (password.length < 6) {
-      setLocalError("Mật khẩu phải có ít nhất 6 ký tự!"); return;
-    }
-    if (password !== confirmPass) {
-      setLocalError("Mật khẩu xác nhận không khớp!"); return;
-    }
+    handleClearError();
     await handleRegister(name, email, password);
   };
 

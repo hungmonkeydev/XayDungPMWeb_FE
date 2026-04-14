@@ -10,10 +10,18 @@ export function useAuth() {
 
   // ---- ĐĂNG NHẬP ----
   const handleLogin = async (email, password) => {
-    const result = await dispatch(login({ email, password }));
-    if (login.fulfilled.match(result)) navigate("/");
-  };
+  const result = await dispatch(login({ email, password }));
+  if (login.fulfilled.match(result)) {
+    const user = result.payload.user;
 
+    // Kiểm tra role để chuyển trang phù hợp
+    if (user.role === "ROLE_ADMIN" || user.role === "ROLE_STAFF") {
+      navigate("/admin");
+    } else {
+      navigate("/");
+    }
+  }
+};
   // ---- ĐĂNG KÝ ----
   const handleRegister = async (name, email, password) => { // ← bỏ soDienThoai, diaChi
   const result = await dispatch(register({ name, email, password }));
