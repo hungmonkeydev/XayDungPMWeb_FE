@@ -55,7 +55,8 @@ export default function StaffPage() {
     return staffList.filter(s => {
       if (filters.search) {
         const q = filters.search.toLowerCase();
-        if (!s.name.toLowerCase().includes(q) && !s.email.toLowerCase().includes(q)) return false;
+
+        if (!s.name?.toLowerCase().includes(q) && !s.email?.toLowerCase().includes(q)) return false;
       }
       if (filters.type && s.type !== filters.type) return false;
       if (filters.loginMethod && s.loginMethod !== filters.loginMethod) return false;

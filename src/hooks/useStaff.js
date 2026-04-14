@@ -39,7 +39,10 @@ export function useStaff() {
     setError(null);
     try {
       const data = await authFetch(BASE);
-      setStaffList(Array.isArray(data) ? data : (data?.data ?? []));
+
+      const list = data?.data?.result || data?.data?.items || data?.data?.content || data?.data || (Array.isArray(data) ? data : []);
+
+      setStaffList(list);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,13 +61,16 @@ export function useStaff() {
         method: "POST",
         body: JSON.stringify(formData)
       });
-      const newStaff = created ?? {
-        ...formData,
-        id: Date.now(),
-        loginMethod: "email",
-        createdAt: new Date().toISOString(),
-        lastLoginAt: null
-      };
+
+      const newStaff = created?.data?.result || // 👈 FIX CHÍNH
+        created || {
+          ...formData,
+          id: Date.now(),
+          loginMethod: "email",
+          createdAt: new Date().toISOString(),
+          lastLoginAt: null
+        };
+
       setStaffList(prev => [...prev, newStaff]);
       return newStaff;
     },
@@ -78,8 +84,12 @@ export function useStaff() {
         method: "PUT",
         body: JSON.stringify(formData)
       });
-      setStaffList(prev => prev.map(s => (s.id === id ? { ...s, ...formData, ...(updated ?? {}) } : s)));
-      return updated;
+
+      const updatedData = updated?.data?.result || updated;
+
+      setStaffList(prev => prev.map(s => (s.id === id ? { ...s, ...formData, ...(updatedData ?? {}) } : s)));
+
+      return updatedData;
     },
     [authFetch]
   );
