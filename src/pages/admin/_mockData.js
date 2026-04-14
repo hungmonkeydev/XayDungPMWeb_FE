@@ -15,16 +15,9 @@ export const dashboardStats = [
   },
   {
     id: 3,
-    label: "Khách hàng mới",
+    label: "Khách hàng",
     value: "89",
     icon: "customers"
-  },
-  {
-    id: 4,
-    label: "Tỷ lệ hủy đơn",
-    value: "2.8%",
-    icon: "cancel",
-    invertDelta: true
   }
 ];
 
@@ -50,6 +43,7 @@ export const recentOrders = [
   { id: "#DH0090", customer: "Trần Thị B", product: "Bàn ăn gỗ sồi 6 ghế", total: "₫8,200,000", method: "COD", status: "shipping" },
   { id: "#DH0089", customer: "Lê Minh C", product: "Tủ quần áo 3 cánh", total: "₫15,700,000", method: "VNPay", status: "confirmed" },
   { id: "#DH0088", customer: "Phạm Thanh D", product: "Kệ sách gỗ cao su", total: "₫3,900,000", method: "COD", status: "pending" },
+  { id: "#DH0088", customer: "Phạm Thanh D", product: "Kệ sách gỗ cao su", total: "₫3,900,000", method: "COD", status: "pending" },
   { id: "#DH0087", customer: "Hoàng Kim E", product: "Giường ngủ King 1m8", total: "₫22,000,000", method: "VNPay", status: "cancelled" }
 ];
 
@@ -57,6 +51,11 @@ export const topProducts = [
   { name: "Ghế sofa L Milan", category: "Phòng khách", sold: 84, revenue: "₫1.04B" },
   { name: "Bàn ăn gỗ sồi 6 ghế", category: "Phòng ăn", sold: 67, revenue: "₫549.4M" },
   { name: "Giường ngủ King 1m8", category: "Phòng ngủ", sold: 51, revenue: "₫1.12B" },
+  { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
+  { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
+  { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
+  { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
+  { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
   { name: "Tủ quần áo 3 cánh", category: "Phòng ngủ", sold: 43, revenue: "₫675.1M" },
   { name: "Kệ sách gỗ cao su", category: "Làm việc", sold: 98, revenue: "₫382.2M" }
 ];
