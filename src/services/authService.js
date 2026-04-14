@@ -1,8 +1,9 @@
+//src/store/authStore.js
 const BASE_URL = "https://xaydungwebnoithat-backend.onrender.com/api";
 
 // ---- ĐĂNG NHẬP ----
 export async function loginAPI(email, password) {
-  const res = await fetch(`${BASE_URL}/customers/login`, {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -11,7 +12,7 @@ export async function loginAPI(email, password) {
   if (!res.ok) throw new Error(json.message || "Đăng nhập thất bại!");
   return {
     access_token: json.data.token,
-    user: json.data.customer
+    user: json.data.auth
   };
 }
 
