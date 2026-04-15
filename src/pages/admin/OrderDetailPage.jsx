@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import useOrders from "../../hooks/useOrdersAdmin";
+import useOrders from "../../hooks/useOrderAdmin";
 import OrderStatusStepper from "./components/orders/OrderStatusStepper";
 
 /* ── Helpers ── */
