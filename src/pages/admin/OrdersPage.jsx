@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import useOrders from "../../hooks/useOrdersAdmin";
+import useOrders from "../../hooks/useOrderAdmin";
 
 import OrderStatsBar from "./components/orders/OrderStatsBar";
 import OrderFilters from "./components/orders/OrderFilters";
