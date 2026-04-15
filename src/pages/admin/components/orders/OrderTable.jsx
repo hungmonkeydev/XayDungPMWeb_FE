@@ -1,6 +1,12 @@
 // src/pages/admin/components/orders/OrderTable.jsx
 
-import { STATUS_CFG } from "../../_mockOrders";
+const STATUS_CFG = {
+  pending: { label: "Chờ xử lý", cls: "bg-amber-50  text-amber-700", dot: "bg-amber-400" },
+  confirmed: { label: "Xác nhận", cls: "bg-violet-50 text-violet-700", dot: "bg-violet-400" },
+  shipping: { label: "Đang giao", cls: "bg-blue-50   text-blue-700", dot: "bg-blue-400" },
+  completed: { label: "Hoàn tất", cls: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  cancelled: { label: "Đã huỷ", cls: "bg-rose-50   text-rose-700", dot: "bg-rose-400" }
+};
 
 function fmtPrice(n) {
   return "₫" + n.toLocaleString("vi-VN");
@@ -57,7 +63,11 @@ export default function OrderTable({ orders, onView }) {
           {/* Body */}
           <tbody className="divide-y divide-stone-50">
             {orders.map(order => {
-              const scfg = STATUS_CFG[order.status];
+              const scfg = STATUS_CFG[order.status] || STATUS_CFG.pending;
+
+              const firstProduct = order.details?.[0];
+              const moreCount = (order.details?.length || 0) - 1;
+
               return (
                 <tr key={order.id} className="group hover:bg-stone-50/50 transition-colors">
                   {/* Code */}
@@ -71,15 +81,21 @@ export default function OrderTable({ orders, onView }) {
                     <p className="text-[11px] text-stone-400 mt-0.5">{order.customerPhone}</p>
                   </td>
 
-                  {/* Products summary */}
+                  {/* Products */}
                   <td className="px-4 py-3.5 hidden lg:table-cell">
-                    <p className="text-xs text-stone-600 truncate max-w-[200px]">{order.details[0]?.productName}</p>
-                    {order.details.length > 1 && <p className="text-[10px] text-stone-400 mt-0.5">+{order.details.length - 1} sản phẩm khác</p>}
+                    {firstProduct ? (
+                      <>
+                        <p className="text-xs text-stone-600 truncate max-w-[200px]">{firstProduct.productName}</p>
+                        {moreCount > 0 && <p className="text-[10px] text-stone-400 mt-0.5">+{moreCount} sản phẩm khác</p>}
+                      </>
+                    ) : (
+                      <p className="text-xs text-stone-400">Không có sản phẩm</p>
+                    )}
                   </td>
 
                   {/* Total */}
                   <td className="px-4 py-3.5 text-right">
-                    <p className="text-sm font-bold text-stone-900 tabular-nums">{fmtPrice(order.totalPrice)}</p>
+                    <p className="text-sm font-bold text-stone-900 tabular-nums">{fmtPrice(order.totalPrice || 0)}</p>
                     {order.discountAmount > 0 && <p className="text-[10px] text-emerald-600 mt-0.5">-{fmtPrice(order.discountAmount)}</p>}
                   </td>
 
@@ -88,10 +104,10 @@ export default function OrderTable({ orders, onView }) {
                     <span
                       className={[
                         "inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full",
-                        order.method === "VNPay" ? "bg-blue-50 text-blue-600" : "bg-stone-100 text-stone-500"
+                        order.method === "vnpay" ? "bg-blue-50 text-blue-600" : "bg-stone-100 text-stone-500"
                       ].join(" ")}
                     >
-                      {order.method}
+                      {order.method === "vnpay" ? "VNPay" : "COD"}
                     </span>
                   </td>
 
@@ -108,7 +124,7 @@ export default function OrderTable({ orders, onView }) {
                     </span>
                   </td>
 
-                  {/* Actions */}
+                  {/* Action */}
                   <td className="px-4 py-3.5">
                     <button
                       onClick={() => onView(order)}

@@ -3,9 +3,16 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { mockCustomers } from "./_mockCustomers";
-import { STATUS_CFG } from "./_mockOrders";
+// import { STATUS_CFG } from "./_mockOrders";
 
 /* ── Helpers ── */
+const STATUS_CFG = {
+  pending: { label: "Chờ xử lý", cls: "bg-amber-50  text-amber-700", dot: "bg-amber-400" },
+  confirmed: { label: "Xác nhận", cls: "bg-violet-50 text-violet-700", dot: "bg-violet-400" },
+  shipping: { label: "Đang giao", cls: "bg-blue-50   text-blue-700", dot: "bg-blue-400" },
+  completed: { label: "Hoàn tất", cls: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  cancelled: { label: "Đã huỷ", cls: "bg-rose-50   text-rose-700", dot: "bg-rose-400" }
+};
 function fmtPrice(n) {
   if (n === 0) return "₫0";
   return "₫" + n.toLocaleString("vi-VN");
