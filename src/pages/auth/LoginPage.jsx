@@ -4,16 +4,26 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../hooks/useAuth";
 import { InputField, ErrorBox, SubmitButton, Divider, GoogleButton, AuthCard, AuthPage } from "./authComponents";
 import { validateLoginForm } from "../../utils/validators";
-
+import useCart from "../../hooks/useCart";
 export default function LoginPage() {
   const [email, setEmail]         = useState("");
   const [password, setPassword]   = useState("");
   const [localError, setLocalError] = useState("");
   const { handleLogin, handleLoginGoogle, loading, error, handleClearError, isLoggedIn } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => { if (isLoggedIn) navigate("/"); }, [isLoggedIn]);
-
+  const { syncCartToAPI } = useCart();
+  useEffect(() => { 
+    const syncAndRedirect = async () => {
+      if (isLoggedIn) {
+        // Đăng nhập thành công -> Gọi hàm đồng bộ LocalStorage lên API
+        await syncCartToAPI(); 
+        // Đồng bộ xong xuôi mới đẩy người dùng về trang chủ
+        navigate("/"); 
+      }
+    };
+    
+    syncAndRedirect();
+  }, [isLoggedIn, navigate]);
   const handleGoogle = useGoogleLogin({
     onSuccess: async (res) => await handleLoginGoogle(res.access_token),
     onError: () => alert("Đăng nhập Google thất bại!"),
