@@ -39,25 +39,19 @@ const ProductDetailPage = () => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
     };
     const handleAddToCart = () => {
-        // Đóng gói dữ liệu sản phẩm CHUẨN với format mà CartItem đang cần
+        // Đóng gói dữ liệu CHUẨN XÁC
         const productToAdd = {
-            id: currentVariant?.id || realProduct.id, // Dùng id của variant nếu có, không thì dùng id sản phẩm
+            id: realProduct.id,                        // Trả lại đúng ID của Sản phẩm (Ví dụ: 61071)
+            productAttributeId: currentVariant?.id,    // THÊM DÒNG NÀY: Lấy đúng ID của Phiên bản (Màu/Size)
             name: realProduct.name,
-            price: unitPrice, // Giá của 1 sản phẩm
+            price: unitPrice, 
             image: currentImage,
-            // Thêm các trường phụ để hiện ở giỏ hàng (CartItem của bạn đang có 2 trường này)
             size: currentVariant?.Dimension?.name || 'Mặc định', 
             material: currentVariant?.Color?.name || 'Mặc định' 
         };
 
-        // Bỏ vào giỏ với số lượng khách đang chọn
         addToCart(productToAdd, quantity);
-
-        // Hiển thị thông báo (Bạn có thể dùng Toast thư viện thay cho alert cho đẹp)
         alert('Đã thêm sản phẩm vào giỏ hàng!');
-
-        // (Tuỳ chọn) Chuyển hướng thẳng sang trang giỏ hàng
-        // navigate('/gio-hang'); 
     };
 
     return (
