@@ -1,3 +1,4 @@
+//src/store/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginAPI, registerAPI, loginGoogleAPI, logoutAPI } from "../services/authService";
 

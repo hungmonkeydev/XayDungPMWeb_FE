@@ -1,27 +1,20 @@
 // src/pages/admin/components/products/ProductTable.jsx
-
 import { useState } from "react";
 
-/* ── helpers ── */
-function stockBadge(totalStock) {
-  if (totalStock === 0) return { label: "Hết hàng", cls: "bg-rose-50 text-rose-700" };
-  if (totalStock <= 10) return { label: "Sắp hết", cls: "bg-amber-50 text-amber-700" };
+function stockBadge(total) {
+  if (total === 0) return { label: "Hết hàng", cls: "bg-rose-50 text-rose-700" };
+  if (total <= 10) return { label: "Sắp hết", cls: "bg-amber-50 text-amber-700" };
   return { label: "Còn hàng", cls: "bg-emerald-50 text-emerald-700" };
-}
-
-function statusBadge(status) {
-  return status === "active" ? { label: "Đang bán", cls: "bg-emerald-50 text-emerald-700" } : { label: "Ngừng bán", cls: "bg-stone-100  text-stone-500" };
 }
 
 function fmtPrice(n) {
   return "₫" + n.toLocaleString("vi-VN");
 }
 
-/* ── Expandable attribute rows ── */
 function AttributeRows({ attributes }) {
   return (
     <tr>
-      <td colSpan={7} className="p-0">
+      <td colSpan={8} className="p-0">
         <div className="bg-stone-50/80 border-t border-stone-100 px-4 py-3">
           <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Biến thể sản phẩm</p>
           <table className="w-full">
@@ -64,11 +57,88 @@ function AttributeRows({ attributes }) {
   );
 }
 
-/* ── Main table ── */
-export default function ProductTable({ products, onEdit }) {
-  const [expanded, setExpanded] = useState(null);
+/* ── Pagination ── */
+function Pagination({ pagination, page, onPageChange }) {
+  const { total, totalPages } = pagination;
+  const from = (page - 1) * pagination.limit + 1;
+  const to = Math.min(page * pagination.limit, total);
 
+  // Hiển thị tối đa 5 trang
+  const pages = [];
+  const delta = 2;
+  for (let i = Math.max(1, page - delta); i <= Math.min(totalPages, page + delta); i++) {
+    pages.push(i);
+  }
+
+  return (
+    <div className="flex items-center justify-between px-5 py-3 border-t border-stone-100">
+      <p className="text-xs text-stone-400">
+        Hiển thị{" "}
+        <span className="font-semibold text-stone-700">
+          {from}–{to}
+        </span>{" "}
+        trong <span className="font-semibold text-stone-700">{total}</span> sản phẩm
+      </p>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => onPageChange(page - 1)}
+          disabled={page === 1}
+          className="w-7 h-7 text-xs rounded-lg text-stone-500 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+        >
+          ‹
+        </button>
+        {pages[0] > 1 && (
+          <>
+            <button onClick={() => onPageChange(1)} className="w-7 h-7 text-xs rounded-lg text-stone-500 hover:bg-stone-100">
+              1
+            </button>
+            {pages[0] > 2 && <span className="text-xs text-stone-400 px-1">…</span>}
+          </>
+        )}
+        {pages.map(p => (
+          <button
+            key={p}
+            onClick={() => onPageChange(p)}
+            className={`w-7 h-7 text-xs rounded-lg transition-colors ${p === page ? "bg-stone-900 text-white font-semibold" : "text-stone-500 hover:bg-stone-100"}`}
+          >
+            {p}
+          </button>
+        ))}
+        {pages[pages.length - 1] < totalPages && (
+          <>
+            {pages[pages.length - 1] < totalPages - 1 && <span className="text-xs text-stone-400 px-1">…</span>}
+            <button onClick={() => onPageChange(totalPages)} className="w-7 h-7 text-xs rounded-lg text-stone-500 hover:bg-stone-100">
+              {totalPages}
+            </button>
+          </>
+        )}
+        <button
+          onClick={() => onPageChange(page + 1)}
+          disabled={page === totalPages}
+          className="w-7 h-7 text-xs rounded-lg text-stone-500 hover:bg-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main table ── */
+export default function ProductTable({ products, loading, pagination, page, onPageChange, onEdit, onDelete }) {
+  const [expanded, setExpanded] = useState(null);
   const toggleExpand = id => setExpanded(prev => (prev === id ? null : id));
+
+  if (loading) {
+    return (
+      <div className="bg-white border border-stone-100 rounded-2xl">
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="w-6 h-6 border-2 border-stone-300 border-t-stone-700 rounded-full animate-spin mb-3" />
+          <p className="text-sm text-stone-400">Đang tải sản phẩm...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (products.length === 0) {
     return (
@@ -98,7 +168,6 @@ export default function ProductTable({ products, onEdit }) {
               <th className="text-left text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-3 py-3">Biến thể</th>
               <th className="text-right text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-3 py-3">Giá từ</th>
               <th className="text-center text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-3 py-3">Tồn kho</th>
-              <th className="text-center text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-3 py-3">Trạng thái</th>
               <th className="px-3 py-3" />
             </tr>
           </thead>
@@ -108,12 +177,11 @@ export default function ProductTable({ products, onEdit }) {
               const totalStock = product.attributes.reduce((s, a) => s + a.stock, 0);
               const minPrice = Math.min(...product.attributes.map(a => a.price));
               const sb = stockBadge(totalStock);
-              const stb = statusBadge(product.status);
 
               return (
                 <>
                   <tr key={product.id} className={`group transition-colors ${isExpanded ? "bg-stone-50/60" : "hover:bg-stone-50/40"}`}>
-                    {/* Expand toggle */}
+                    {/* Expand */}
                     <td className="px-4 py-3.5">
                       <button
                         onClick={() => toggleExpand(product.id)}
@@ -133,15 +201,20 @@ export default function ProductTable({ products, onEdit }) {
                       </button>
                     </td>
 
-                    {/* Name + ID */}
+                    {/* Name + image */}
                     <td className="px-3 py-3.5">
                       <div className="flex items-center gap-3">
-                        {/* Placeholder thumbnail */}
-                        <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0 text-lg">🪑</div>
+                        <div className="w-10 h-10 bg-stone-100 rounded-lg flex-shrink-0 overflow-hidden">
+                          {product.image ? (
+                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="w-full h-full flex items-center justify-center text-lg">🪑</span>
+                          )}
+                        </div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-stone-900 truncate max-w-[200px]">{product.name}</p>
                           <p className="text-[10px] text-stone-400 mt-0.5">
-                            #SP{String(product.id).padStart(3, "0")} · {product.createdAt}
+                            #{product.id} · {product.createdAt}
                           </p>
                         </div>
                       </div>
@@ -160,17 +233,6 @@ export default function ProductTable({ products, onEdit }) {
                       >
                         <span className="font-semibold text-stone-900">{product.attributes.length}</span>
                         <span>biến thể</span>
-                        <svg
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          className="w-3 h-3 opacity-0 group-hover/btn:opacity-100 transition-opacity"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M2 6h8M6 2l4 4-4 4" />
-                        </svg>
                       </button>
                     </td>
 
@@ -179,17 +241,12 @@ export default function ProductTable({ products, onEdit }) {
                       <span className="text-sm font-semibold text-stone-900 tabular-nums">{fmtPrice(minPrice)}</span>
                     </td>
 
-                    {/* Stock badge */}
+                    {/* Stock */}
                     <td className="px-3 py-3.5 text-center">
                       <div className="flex flex-col items-center gap-0.5">
                         <span className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full ${sb.cls}`}>{sb.label}</span>
                         {totalStock > 0 && <span className="text-[10px] text-stone-400">{totalStock} cái</span>}
                       </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-3 py-3.5 text-center">
-                      <span className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full ${stb.cls}`}>{stb.label}</span>
                     </td>
 
                     {/* Actions */}
@@ -201,15 +258,17 @@ export default function ProductTable({ products, onEdit }) {
                         >
                           Sửa
                         </button>
-                        <button className="text-[11px] font-medium text-rose-500 hover:text-rose-700 px-2.5 py-1.5 rounded-lg hover:bg-rose-50 transition-colors">
+                        <button
+                          onClick={() => onDelete(product)}
+                          className="text-[11px] font-medium text-rose-500 hover:text-rose-700 px-2.5 py-1.5 rounded-lg hover:bg-rose-50 transition-colors"
+                        >
                           Xoá
                         </button>
                       </div>
                     </td>
                   </tr>
 
-                  {/* Expanded attribute rows */}
-                  {isExpanded && <AttributeRows attributes={product.attributes} />}
+                  {isExpanded && <AttributeRows key={`attr-${product.id}`} attributes={product.attributes} />}
                 </>
               );
             })}
@@ -217,22 +276,7 @@ export default function ProductTable({ products, onEdit }) {
         </table>
       </div>
 
-      {/* Pagination placeholder */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-stone-100">
-        <p className="text-xs text-stone-400">
-          Hiển thị <span className="font-semibold text-stone-700">{products.length}</span> sản phẩm
-        </p>
-        <div className="flex items-center gap-1">
-          {[1, 2, 3].map(p => (
-            <button
-              key={p}
-              className={`w-7 h-7 text-xs rounded-lg transition-colors ${p === 1 ? "bg-stone-900 text-white font-semibold" : "text-stone-500 hover:bg-stone-100"}`}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Pagination pagination={pagination} page={page} onPageChange={onPageChange} />
     </div>
   );
 }
