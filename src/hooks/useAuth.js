@@ -10,23 +10,37 @@ export function useAuth() {
 
   // ---- ĐĂNG NHẬP ----
   const handleLogin = async (email, password) => {
-  const result = await dispatch(login({ email, password }));
-  if (login.fulfilled.match(result)) {
-    const user = result.payload.user;
+    const result = await dispatch(login({ email, password }));
+    
+    if (login.fulfilled.match(result)) {
+      // 1. Lấy user ra một cách an toàn (có dấu ?)
+      const user = result.payload?.user; 
+      
+      // 2. In ra xem rốt cuộc Backend trả về cái gì
+      console.log("Toàn bộ payload:", result.payload);
+      console.log("Dữ liệu user lấy được:", user);
 
-    // Kiểm tra role để chuyển trang phù hợp
-    if (user.role === "ROLE_ADMIN" || user.role === "ROLE_STAFF") {
-      navigate("/admin");
-    } else {
-      navigate("/");
+      // 3. CHẶN LỖI: Nếu user bị undefined thì dừng lại luôn, không chạy tiếp để khỏi sập web
+      if (!user) {
+        console.error("CẢNH BÁO: Đăng nhập thành công nhưng Backend không trả về thông tin user!");
+        // Tạm thời cho về trang chủ để web không bị treo
+        navigate("/"); 
+        return; 
+      }
+
+      // 4. Nếu có user đàng hoàng thì mới đi check role
+      if (user.role === "ROLE_ADMIN" || user.role === "ROLE_STAFF") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     }
-  }
-};
+  };
   // ---- ĐĂNG KÝ ----
   const handleRegister = async (name, email, password) => { // ← bỏ soDienThoai, diaChi
-  const result = await dispatch(register({ name, email, password }));
-  if (register.fulfilled.match(result)) navigate("/login");
-};
+    const result = await dispatch(register({ name, email, password }));
+    if (register.fulfilled.match(result)) navigate("/login");
+  };
 
   // ---- ĐĂNG NHẬP GOOGLE ----
   const handleLoginGoogle = async (googleToken) => {
