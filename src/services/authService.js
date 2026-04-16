@@ -1,4 +1,4 @@
-//src/services/authStore.js
+//src/services/authService.js
 const BASE_URL = "https://xaydungwebnoithat-backend.onrender.com/api";
 
 // ---- ĐĂNG NHẬP ----
