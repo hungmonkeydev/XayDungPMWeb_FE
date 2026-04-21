@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import { useOrders } from "../../hooks/useOrders";
+import useCart from "../../hooks/useCart";
 import { validateCheckoutForm } from "../../utils/validators";
 
 const formatPrice = (price) =>
@@ -11,7 +11,7 @@ const formatPrice = (price) =>
 export default function CheckoutPage() {
   const { user, handleLogout } = useAuth();
   const { handleCreateOrder, loading, error } = useOrders();
-  const cartItems = useSelector((state) => state.cart?.items || []);
+  const { cart: cartItems } = useCart();
   const navigate  = useNavigate();
 
   const [form, setForm] = useState({
