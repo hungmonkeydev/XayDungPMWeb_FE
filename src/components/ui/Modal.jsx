@@ -1,11 +1,9 @@
 import React from 'react';
-
-// Component Modal nhận vào 4 props cơ bản
 const Modal = ({
-    isOpen,   // Trạng thái: true (hiện Modal) hoặc false (ẩn Modal)
-    onClose,  // Hàm để chạy khi bấm nút X hoặc bấm ra ngoài nền đen
-    title,    // Tiêu đề của hộp thoại (VD: "Xác nhận xóa", "Đăng nhập")
-    children  // Nội dung chính bên trong hộp thoại
+    isOpen,   
+    onClose,  
+    title,    
+    children  
 }) => {
 
     // 1.Nếu isOpen là false thì return null luôn, tức là React sẽ không vẽ cái gì ra màn hình cả.
@@ -23,8 +21,6 @@ const Modal = ({
                     <h3 className="text-lg font-semibold text-gray-800">
                         {title}
                     </h3>
-
-                    {/* Nút Đóng (Dấu X) */}
                     <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full p-1 transition-colors focus:outline-none"

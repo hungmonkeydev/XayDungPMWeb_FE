@@ -1,10 +1,9 @@
 import React from 'react';
 
-// Component Loading nhận 3 props cơ bản
 const Loading = ({
-    size = 'md',        // Kích thước: sm (nhỏ), md (vừa), lg (to)
-    color = 'primary',  // Màu sắc: primary (xanh), white (trắng - dùng trong nút nền đậm), gray (xám)
-    fullScreen = false  // Trạng thái: true (che mờ toàn màn hình), false (chỉ xoay ở một chỗ)
+    size = 'md',        
+    color = 'primary',  
+    fullScreen = false  
 }) => {
 
     // 1. Cấu hình kích thước

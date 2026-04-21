@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import useProductDetail from '../../hooks/useProductDetail';
 import imgBoBanGhe1 from '../../assets/products/imgBoBanGhe1.png';
-
+import useCart from '../../hooks/useCart';
 const ProductDetailPage = () => {
     const { id } = useParams();
     const { product, loading, error } = useProductDetail(id);
-
+    const { addToCart } = useCart();
     // --- BÍ KÍP TRỊ LỖI BÓC HỘP (XỬ LÝ DỮ LIỆU BỊ LỒNG) ---
     let realProduct = product;
     if (product?.data) {
@@ -37,6 +37,21 @@ const ProductDetailPage = () => {
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    };
+    const handleAddToCart = () => {
+        // Đóng gói dữ liệu CHUẨN XÁC
+        const productToAdd = {
+            id: realProduct.id,                        // Trả lại đúng ID của Sản phẩm (Ví dụ: 61071)
+            productAttributeId: currentVariant?.id,    // THÊM DÒNG NÀY: Lấy đúng ID của Phiên bản (Màu/Size)
+            name: realProduct.name,
+            price: unitPrice, 
+            image: currentImage,
+            size: currentVariant?.Dimension?.name || 'Mặc định', 
+            material: currentVariant?.Color?.name || 'Mặc định' 
+        };
+
+        addToCart(productToAdd, quantity);
+        alert('Đã thêm sản phẩm vào giỏ hàng!');
     };
 
     return (
@@ -160,7 +175,9 @@ const ProductDetailPage = () => {
                     </div>
                     
                     <div className="mt-auto pt-4 flex gap-4">
-                        <button className="flex-1 bg-amber-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-amber-600 transition shadow-lg shadow-amber-500/30">
+                        <button 
+                        onClick={handleAddToCart}
+                        className="flex-1 bg-amber-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-amber-600 transition shadow-lg shadow-amber-500/30">
                             THÊM VÀO GIỎ HÀNG
                         </button>
                     </div>

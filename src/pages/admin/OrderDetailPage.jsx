@@ -1,11 +1,33 @@
 // src/pages/admin/OrderDetailPage.jsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { mockOrders, STATUS_CFG, STATUS_FLOW, PAYMENT_STATUS_CFG } from "./_mockOrders";
+import useOrders from "../../hooks/useOrderAdmin";
 import OrderStatusStepper from "./components/orders/OrderStatusStepper";
 
 /* ── Helpers ── */
+// Thứ tự chuyển trạng thái hợp lệ
+const STATUS_FLOW = {
+  pending: "confirmed",
+  confirmed: "shipping",
+  shipping: "completed",
+  completed: null,
+  cancelled: null
+};
+
+const STATUS_CFG = {
+  pending: { label: "Chờ xử lý", cls: "bg-amber-50  text-amber-700", dot: "bg-amber-400" },
+  confirmed: { label: "Xác nhận", cls: "bg-violet-50 text-violet-700", dot: "bg-violet-400" },
+  shipping: { label: "Đang giao", cls: "bg-blue-50   text-blue-700", dot: "bg-blue-400" },
+  completed: { label: "Hoàn tất", cls: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
+  cancelled: { label: "Đã huỷ", cls: "bg-rose-50   text-rose-700", dot: "bg-rose-400" }
+};
+
+const PAYMENT_STATUS_CFG = {
+  pending: { label: "Chờ thanh toán", cls: "bg-amber-50 text-amber-700" },
+  success: { label: "Đã thanh toán", cls: "bg-emerald-50 text-emerald-700" },
+  failed: { label: "Thất bại", cls: "bg-rose-50 text-rose-700" }
+};
 function fmtPrice(n) {
   return "₫" + n.toLocaleString("vi-VN");
 }
@@ -66,10 +88,28 @@ function ConfirmModal({ title, message, confirmLabel, confirmCls, onConfirm, onC
 export default function OrderDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const order = mockOrders.find(o => o.id === Number(id));
-  const [orderState, setOrder] = useState(order);
+  const { getById } = useOrders();
+
+  const [orderState, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [modal, setModal] = useState(null); // "advance" | "cancel"
   const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      setLoading(true);
+      const data = await getById(id);
+      setOrder(data);
+      setLoading(false);
+    };
+
+    fetchOrder();
+  }, [id]);
+
+  if (loading || !orderState) {
+    return <div className="p-6">Đang tải...</div>;
+  }
 
   const scfg = STATUS_CFG[orderState.status];
   const nextStatus = STATUS_FLOW[orderState.status];
@@ -97,7 +137,7 @@ export default function OrderDetailPage() {
     showToast("Đơn hàng đã được huỷ.");
   };
 
-  const pymCfg = PAYMENT_STATUS_CFG[order.payment.status];
+  const pymCfg = PAYMENT_STATUS_CFG[orderState.payment.status];
 
   return (
     <div className="p-6 max-w-[960px] space-y-5">
@@ -124,13 +164,13 @@ export default function OrderDetailPage() {
           </button>
           <div>
             <div className="flex items-center gap-2.5">
-              <h2 className="text-lg font-bold text-stone-900 tracking-tight">Đơn hàng {order.code}</h2>
+              <h2 className="text-lg font-bold text-stone-900 tracking-tight">Đơn hàng {orderState.code}</h2>
               <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full ${scfg.cls}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${scfg.dot}`} />
                 {scfg.label}
               </span>
             </div>
-            <p className="text-xs text-stone-400 mt-0.5">Tạo lúc {fmtDate(order.createdAt)}</p>
+            <p className="text-xs text-stone-400 mt-0.5">Tạo lúc {fmtDate(orderState.createdAt)}</p>
           </div>
         </div>
 
@@ -164,9 +204,9 @@ export default function OrderDetailPage() {
         {/* Left col */}
         <div className="lg:col-span-2 space-y-5">
           {/* Order items */}
-          <SectionCard title={`Sản phẩm (${order.details.length})`}>
+          <SectionCard title={`Sản phẩm (${orderState.details.length})`}>
             <div className="space-y-3">
-              {order.details.map(item => (
+              {orderState.details.map(item => (
                 <div key={item.id} className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-stone-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">🪑</div>
                   <div className="flex-1 min-w-0">
@@ -186,17 +226,17 @@ export default function OrderDetailPage() {
             <div className="mt-4 pt-4 border-t border-stone-100 space-y-2">
               <div className="flex justify-between text-xs text-stone-500">
                 <span>Tạm tính</span>
-                <span className="tabular-nums">{fmtPrice(order.subtotal)}</span>
+                <span className="tabular-nums">{fmtPrice(orderState.subtotal)}</span>
               </div>
-              {order.discountAmount > 0 && (
+              {orderState.discountAmount > 0 && (
                 <div className="flex justify-between text-xs text-emerald-600">
-                  <span>Giảm giá {order.promotionCode && `(${order.promotionCode})`}</span>
-                  <span className="tabular-nums">-{fmtPrice(order.discountAmount)}</span>
+                  <span>Giảm giá {orderState.promotionCode && `(${orderState.promotionCode})`}</span>
+                  <span className="tabular-nums">-{fmtPrice(orderState.discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm font-bold text-stone-900 pt-1 border-t border-stone-100">
                 <span>Tổng cộng</span>
-                <span className="tabular-nums">{fmtPrice(order.totalPrice)}</span>
+                <span className="tabular-nums">{fmtPrice(orderState.totalPrice)}</span>
               </div>
             </div>
           </SectionCard>
@@ -207,16 +247,16 @@ export default function OrderDetailPage() {
               <InfoRow label="Phương thức">
                 <span
                   className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                    order.payment.method === "VNPay" ? "bg-blue-50 text-blue-600" : "bg-stone-100 text-stone-500"
+                    orderState.payment.method === "VNPay" ? "bg-blue-50 text-blue-600" : "bg-stone-100 text-stone-500"
                   }`}
                 >
-                  {order.payment.method}
+                  {orderState.payment.method}
                 </span>
               </InfoRow>
               <InfoRow label="Mã giao dịch">
-                <span className="font-mono text-[11px] text-stone-600 bg-stone-50 px-2 py-0.5 rounded">{order.payment.transactionId}</span>
+                <span className="font-mono text-[11px] text-stone-600 bg-stone-50 px-2 py-0.5 rounded">{orderState.payment.transactionId}</span>
               </InfoRow>
-              <InfoRow label="Số tiền">{fmtPrice(order.payment.amount)}</InfoRow>
+              <InfoRow label="Số tiền">{fmtPrice(orderState.payment.amount)}</InfoRow>
               <InfoRow label="Trạng thái thanh toán">
                 <span className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full ${pymCfg.cls}`}>{pymCfg.label}</span>
               </InfoRow>
@@ -230,25 +270,25 @@ export default function OrderDetailPage() {
           <SectionCard title="Khách hàng">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-stone-900 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                {order.customerName.split(" ").slice(-1)[0][0]}
+                {orderState.customerName.split(" ").slice(-1)[0][0]}
               </div>
               <div>
-                <p className="text-sm font-semibold text-stone-900">{order.customerName}</p>
-                <p className="text-xs text-stone-400">{order.customerPhone}</p>
+                <p className="text-sm font-semibold text-stone-900">{orderState.customerName}</p>
+                <p className="text-xs text-stone-400">{orderState.customerPhone}</p>
               </div>
             </div>
-            <InfoRow label="Địa chỉ giao">{order.customerAddress}</InfoRow>
-            {order.note && <InfoRow label="Ghi chú">{order.note}</InfoRow>}
+            <InfoRow label="Địa chỉ giao">{orderState.customerAddress}</InfoRow>
+            {orderState.note && <InfoRow label="Ghi chú">{orderState.note}</InfoRow>}
           </SectionCard>
 
           {/* Order summary */}
           <SectionCard title="Tóm tắt đơn hàng">
-            <InfoRow label="Mã đơn">{order.code}</InfoRow>
-            <InfoRow label="Ngày đặt">{fmtDate(order.createdAt)}</InfoRow>
+            <InfoRow label="Mã đơn">{orderState.code}</InfoRow>
+            <InfoRow label="Ngày đặt">{fmtDate(orderState.createdAt)}</InfoRow>
             <InfoRow label="Phương thức vận chuyển">Giao hàng tiêu chuẩn</InfoRow>
-            {order.promotionCode && (
+            {orderState.promotionCode && (
               <InfoRow label="Mã khuyến mãi">
-                <span className="font-mono bg-stone-100 text-stone-700 px-2 py-0.5 rounded text-[11px]">{order.promotionCode}</span>
+                <span className="font-mono bg-stone-100 text-stone-700 px-2 py-0.5 rounded text-[11px]">{orderState.promotionCode}</span>
               </InfoRow>
             )}
           </SectionCard>
@@ -259,7 +299,7 @@ export default function OrderDetailPage() {
       {modal === "advance" && (
         <ConfirmModal
           title={`Chuyển sang "${nextLabel}"?`}
-          message={`Xác nhận chuyển trạng thái đơn ${order.code} từ "${scfg.label}" sang "${nextLabel}". Hành động này không thể hoàn tác.`}
+          message={`Xác nhận chuyển trạng thái đơn ${orderState.code} từ "${scfg.label}" sang "${nextLabel}". Hành động này không thể hoàn tác.`}
           confirmLabel={`Xác nhận → ${nextLabel}`}
           confirmCls="bg-stone-900 hover:bg-stone-700"
           onConfirm={handleAdvance}
@@ -269,7 +309,7 @@ export default function OrderDetailPage() {
       {modal === "cancel" && (
         <ConfirmModal
           title="Huỷ đơn hàng?"
-          message={`Bạn có chắc muốn huỷ đơn ${order.code}? Hành động này không thể hoàn tác và sẽ cập nhật trạng thái thanh toán.`}
+          message={`Bạn có chắc muốn huỷ đơn ${orderState.code}? Hành động này không thể hoàn tác và sẽ cập nhật trạng thái thanh toán.`}
           confirmLabel="Xác nhận huỷ"
           confirmCls="bg-rose-600 hover:bg-rose-700"
           onConfirm={handleCancel}

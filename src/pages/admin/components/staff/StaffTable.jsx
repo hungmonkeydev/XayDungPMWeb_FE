@@ -22,7 +22,7 @@ function fmtDate(iso) {
   });
 }
 
-export default function StaffTable({ staffList, onEdit, onToggleStatus }) {
+export default function StaffTable({ staffList, onEdit, onToggleStatus, onDelete }) {
   if (staffList.length === 0) {
     return (
       <div className="bg-white border border-stone-100 rounded-2xl">
@@ -122,6 +122,16 @@ export default function StaffTable({ staffList, onEdit, onToggleStatus }) {
                         className="text-[11px] font-semibold text-stone-600 hover:text-stone-900 px-2.5 py-1.5 rounded-lg hover:bg-stone-100 transition-colors"
                       >
                         Sửa
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Xóa nhân viên ${s.name}?`)) {
+                            onDelete(s);
+                          }
+                        }}
+                        className="text-[11px] font-semibold text-red-500 hover:text-red-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                      >
+                        Xóa
                       </button>
                       <button
                         onClick={() => onToggleStatus(s)}

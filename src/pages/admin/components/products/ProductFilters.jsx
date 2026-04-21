@@ -1,11 +1,8 @@
 // src/pages/admin/components/products/ProductFilters.jsx
-
-import { mockCategories } from "../../_mockProducts";
 import AdminIcon from "../AdminIcons";
 
-export default function ProductFilters({ filters, onChange, onReset }) {
+export default function ProductFilters({ filters, categories = [], onChange, onReset }) {
   const handle = key => e => onChange({ ...filters, [key]: e.target.value });
-
   const hasActiveFilter = filters.search || filters.categoryId || filters.status || filters.stock;
 
   return (
@@ -22,29 +19,18 @@ export default function ProductFilters({ filters, onChange, onReset }) {
         />
       </div>
 
-      {/* Category */}
+      {/* Category — từ API */}
       <select
         value={filters.categoryId}
         onChange={handle("categoryId")}
         className="bg-white border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-700 outline-none cursor-pointer hover:border-stone-400 transition-colors"
       >
         <option value="">Tất cả danh mục</option>
-        {mockCategories.map(c => (
+        {categories.map(c => (
           <option key={c.id} value={c.id}>
             {c.name}
           </option>
         ))}
-      </select>
-
-      {/* Status */}
-      <select
-        value={filters.status}
-        onChange={handle("status")}
-        className="bg-white border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-700 outline-none cursor-pointer hover:border-stone-400 transition-colors"
-      >
-        <option value="">Tất cả trạng thái</option>
-        <option value="active">Đang bán</option>
-        <option value="inactive">Ngừng bán</option>
       </select>
 
       {/* Stock */}
@@ -59,7 +45,6 @@ export default function ProductFilters({ filters, onChange, onReset }) {
         <option value="out">Hết hàng</option>
       </select>
 
-      {/* Reset */}
       {hasActiveFilter && (
         <button onClick={onReset} className="text-xs text-stone-500 hover:text-stone-800 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors">
           Xoá bộ lọc ×

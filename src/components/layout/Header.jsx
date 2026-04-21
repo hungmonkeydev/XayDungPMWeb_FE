@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const Header = () => {
+  const { isLoggedIn, user, handleLogout } = useAuth();
+
   const announcements = [
     "Miễn phí lắp đặt nội thành các đơn hàng",
     "Mua ngay nhận quà ưu đãi, đừng bỏ lỡ!",
@@ -74,12 +77,32 @@ const Header = () => {
                 </span>
               </div>
 
-              <Link to="/login" className="flex flex-col items-center justify-center text-gray-700 hover:text-amber-600 transition-colors">
-                <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span className="text-xs font-medium whitespace-nowrap">Đăng nhập</span>
-              </Link>
+              {isLoggedIn ? (
+                <div className="relative group flex flex-col items-center justify-center text-gray-700 transition-colors h-full">
+                  <Link to="/profile" className="flex flex-col items-center justify-center hover:text-amber-600 pb-1">
+                    <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="text-xs font-medium whitespace-nowrap hover:text-amber-600">{user?.name || "Tài khoản"}</span>
+                  </Link>
+
+                  {/* Menu Dropdown mộc mạc khi Hover */}
+                  <div className="absolute top-full right-0 pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="bg-white border border-gray-100 shadow-md rounded overflow-hidden">
+                      <Link to="/profile" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-amber-500 border-b border-gray-50">Hồ sơ của tôi</Link>
+                      <Link to="/orders" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-amber-500 border-b border-gray-50">Đơn hàng</Link>
+                      <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50">Đăng xuất</button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link to="/login" className="flex flex-col items-center justify-center text-gray-700 hover:text-amber-600 transition-colors">
+                  <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="text-xs font-medium whitespace-nowrap">Đăng nhập</span>
+                </Link>
+              )}
 
               <Link to="/gio-hang" className="relative flex flex-col items-center justify-center text-gray-700 hover:text-amber-600 transition-colors">
                 <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
