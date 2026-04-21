@@ -7,10 +7,10 @@ const getAuthHeader = () => ({
 
 // ---- TẠO THANH TOÁN VNPAY ----
 export async function createVNPayPaymentAPI(orderId) {
-  const res = await fetch(`${BASE_URL}/payments/vnpay/create`, {
+  // orderId là query param, không phải body
+  const res = await fetch(`${BASE_URL}/payments/vnpay/create?orderId=${orderId}`, {
     method: "POST",
     headers: getAuthHeader(),
-    body: JSON.stringify({ orderId }),
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Tạo thanh toán thất bại!");

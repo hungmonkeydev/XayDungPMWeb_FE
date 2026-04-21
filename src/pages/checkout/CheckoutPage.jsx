@@ -58,7 +58,7 @@ export default function CheckoutPage() {
       customerName:    form.hoTen,
       customerPhone:   form.soDienThoai,
       customerAddress: `${form.diaChi}, ${form.tinhThanh}`,
-      method:          paymentMethod,
+      method:          paymentMethod.toUpperCase(),
       note:            form.ghiChu,
     });
   };

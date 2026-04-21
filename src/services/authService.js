@@ -30,16 +30,28 @@ export async function registerAPI(name, email, password) {
 
 // ---- ĐĂNG NHẬP GOOGLE ----
 export async function loginGoogleAPI(googleToken) {
+  // Lấy thông tin user từ Google trước
+  const userInfoRes = await fetch(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    { headers: { Authorization: `Bearer ${googleToken}` } }
+  );
+  const userInfo = await userInfoRes.json();
+
+  // Gửi lên BE theo đúng format Postman yêu cầu
   const res = await fetch(`${BASE_URL}/customers/google`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ googleToken })
+    body: JSON.stringify({
+      idGoogle: userInfo.sub,   // Google ID duy nhất
+      email:    userInfo.email,
+      name:     userInfo.name,
+    }),
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || "Đăng nhập Google thất bại!");
   return {
     access_token: json.data.token,
-    user: json.data.customer
+    user: json.data.customer,
   };
 }
 
